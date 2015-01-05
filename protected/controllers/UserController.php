@@ -4,7 +4,6 @@ class UserController extends BaseController
 {
 	public function actionIndex()
 	{
-
         $inStat = Incount::model()->findAll(array('select'=>'customer_id,sum(money) as money','condition'=>'user_id=:userID', 'params'=>array(':userID'=>3), 'group'=>'customer_id'));
         $outStat = Outcount::model()->findAll(array('select'=>'customer_id,sum(money) as money','condition'=>'user_id=:userID', 'params'=>array(':userID'=>3), 'group'=>'customer_id'));
         $incount = array();
@@ -33,16 +32,19 @@ class UserController extends BaseController
             if ($model->validate() && $model->login()) {
                 $this->redirect(Yii::app()->user->returnUrl);
                 echo $this->encodeResult(array('returnUrl'=>$this->redirect(Yii::app()->user->returnUrl)));
-            }
-            if ($model->hasErrors()) {
+                return;
+            } else if ($model->hasErrors()) {
                 echo $this->encodeResult($model->getErrors(), 1);
+                return;
             }
         }
+
+        echo $this->encodeResult(t('prompt', 'NOPARAM'), 2);
     }
     /**
      * Displays the login page
      */
-    public function actionLogin_old()
+    public function actionLogin_web()
     {
         $model = new User('login');
         $loginForm = $this->request->getParam("User");
@@ -71,6 +73,25 @@ class UserController extends BaseController
      * 注册用户
      */
     public function actionRegister()
+    {
+        $model = new User('register');
+        $userPost = $this->request->getParam('User');
+        if (isset($userPost)) {
+            $model->setAttributes($userPost);
+            if ($model->validate() && $model->register($userPost)) {
+                echo $this->encodeResult(Yii::app()->user->returnUrl);
+            } else if ($model->hasErrors()) {
+                echo $this->encodeResult($model->getErrors(), 1);
+                return;
+            }
+        }
+        echo $this->encodeResult(t('prompt', 'NOPARAM'), 2);
+    }
+
+    /**
+     * 注册用户
+     */
+    public function actionRegister_web()
     {
         $model = new User('register');
         $userPost = $this->request->getParam('User');
