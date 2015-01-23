@@ -1,0 +1,45 @@
+{
+  "name": "tff",
+  "title": "Tours4Fun",
+  "description": "FE",
+  "version": "0.0.1",
+  "homepage": "http://toursforfun.com",
+  "author": {
+    "name": "qil",
+    "url": "https://www.github.com/gucong3000"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": "http://brother.toursforfun.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "sass": "0.5.0",
+    "less": "1.7.0",
+    "grunt": "0.4.2",
+    "grunt-cli": "0.1.13",
+    "grunt-contrib-concat": "0.4.0",
+    "grunt-contrib-jshint": "0.8.0",
+    "grunt-contrib-uglify": "0.3.2",
+    "grunt-contrib-watch": "0.5.3",
+    "grunt-contrib-less": "0.11.0",
+    "grunt-contrib-copy": "0.5.0",
+    "grunt-contrib-sass": "0.7.3",
+    "grunt-autoprefixer": "0.7.3",
+    "grunt-contrib-clean": "0.5.0"
+  },
+  "scripts": {
+    "build": "npm install && grunt",
+    "start": "grunt watch",
+    "test": "grunt"
+  }
+}
