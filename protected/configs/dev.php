@@ -84,23 +84,23 @@ return array(
 //            'connectionString' => 'mysql:host=192.168.0.250;dbname=tff_2014_06_24',
 //            'username' => 'root',
 //            'password' => 'tufeng1801',
-            'connectionString' => 'mysql:host=localhost;dbname=tff_20141020',
+            'connectionString' => 'mysql:host=localhost;dbname=transfer',
             'username' => 'root',
             'password' => 'root'
         ),
-        'queue' => array(
-            'class' => 'webeez.extensions.T4fBeanstalkdConnection',
-            'servers' => array(
-                array(
-                    'host' => '192.168.0.141',
-                    'port' => '11300',
-                ),
-                array(
-                    'host' => '192.168.0.142',
-                    'port' => '11300',
-                )
-            ),
-        ),
+//        'queue' => array(
+//            'class' => 'webeez.extensions.T4fBeanstalkdConnection',
+//            'servers' => array(
+//                array(
+//                    'host' => '192.168.0.141',
+//                    'port' => '11300',
+//                ),
+//                array(
+//                    'host' => '192.168.0.142',
+//                    'port' => '11300',
+//                )
+//            ),
+//        ),
         'cache'=>array(
             'class' => 'system.caching.CApcCache',
             'keyPrefix' => 'newtff',
@@ -129,24 +129,17 @@ return array(
                 ),
             ),
         ),
-        'redis' => array(
-            'class' => 'webeez.extensions.T4fRedis',
-            'servers' => array(
-                'scheme'   => 'tcp',
-                'host'     => '192.168.0.250',
-                'port'     => 6379,
-                'database' => 15
-            )
-        ),
+//        'redis' => array(
+//            'class' => 'webeez.extensions.T4fRedis',
+//            'servers' => array(
+//                'scheme'   => 'tcp',
+//                'host'     => '192.168.0.250',
+//                'port'     => 6379,
+//                'database' => 15
+//            )
+//        ),
 
         'errorHandler' => array('errorAction' => 'site/error'),
-//		'urlManager'=>array(
-//			'class'=>'webeez.classes.WebeezUrlManager',
-//			'urlFormat'=>'path',
-//			'caseSensitive'=>true,
-//			'showScriptName'=>false,
-//			'rules'=>include('route.php')
-//		),
         'urlManager' => array(
             'class' => 'webeez.classes.WebeezUrlManager',
             'urlFormat' => 'path',

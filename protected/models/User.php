@@ -1,7 +1,7 @@
 <?php
 /**
  * The Administrator user model
- * @author vincent.mi@toursforfun.com
+ * @author vera zhang 2015-01-25
  * @property string $username
  * @property string $password
  * @property string $first_name
@@ -14,9 +14,9 @@
  * @property int $email_notification
  */
 class User extends CActiveRecord {
-        const UNASSIGNED = 10001;
-		private $_provider_id = null;
-		private $_provider = -1;
+//        const UNASSIGNED = 10001;
+//		private $_provider_id = null;
+//		private $_provider = -1;
 
         public function tableName()
         {
@@ -36,13 +36,11 @@ class User extends CActiveRecord {
 
         public function rules(){
                 return array(
-                        array('username,email,first_name,last_name','required'),
+                        array('name,password','required'),
                         array('password','required','on'=>'insert'),
-                        array('active,email_notification','numerical', 'integerOnly'=>true),
-                        array('username,password,first_name,last_name', 'length', 'max'=>45),
-                        array('display_name', 'length', 'max'=>90,'min'=>1),
-                        array('username,email','unique','allowEmpty'=>false),
-                        array('email', 'email'),
+                        array('name', 'length', 'max'=>100),
+                        array('password', 'length', 'max'=>50),
+                        array('username','unique','allowEmpty'=>false),
                 );
         }
 
