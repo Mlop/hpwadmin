@@ -80,18 +80,13 @@ return array(
             'class' => 'webeez.extensions.DbConnection', //CDbConnection
             'emulatePrepare' => true,
             'charset' => 'utf8',
-            //'connectionString' => 'mysql:host=localhost;dbname=yii_yichi',
-            //'username' => 'toursforfun',
-            //'password' => 'toursforfun',
-//            'connectionString' => 'mysql:host=192.168.0.250;dbname=prod_2013_10_16',
+//            250配置
+//            'connectionString' => 'mysql:host=192.168.0.250;dbname=tff_2014_06_24',
 //            'username' => 'root',
-//            'password' => 'tufeng1801'
-
-//            'connectionString' => 'mysql:host=192.168.0.147;dbname=tff_2014_03_11',
-//            'connectionString' => 'mysql:host=192.168.0.147;dbname=tffdb_2014_06_24',
-            'connectionString' => 'mysql:host=192.168.0.250;dbname=tff_2014_06_24',
+//            'password' => 'tufeng1801',
+            'connectionString' => 'mysql:host=localhost;dbname=tff_20141020',
             'username' => 'root',
-            'password' => 'tufeng1801'
+            'password' => 'root'
         ),
         'queue' => array(
             'class' => 'webeez.extensions.T4fBeanstalkdConnection',
