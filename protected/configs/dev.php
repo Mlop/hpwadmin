@@ -24,9 +24,9 @@ return array(
 	'import'=>array(
 		'application.models.*',
 		'application.components.*',
-        'application.controllers.BaseController',
-        'webeez.classes.ChineseTrans',
-        'webeez.extensions.DomainListener',
+//        'application.controllers.BaseController',
+//        'webeez.classes.ChineseTrans',
+//        'webeez.extensions.DomainListener',
 	),
     'defaultController' => 'site',
 	'modules'=>array(
@@ -35,7 +35,7 @@ return array(
 			'class'=>'system.gii.GiiModule',
 			'password'=>'123',
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
-			'ipFilters'=>array('127.0.0.1','::1'),
+			'ipFilters'=>array('10.0.2.2','::1'),
 		),
 	),
 
@@ -55,7 +55,7 @@ return array(
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
-		*/
+
         'urlManager' => array(
             'class' => 'webeez.classes.WebeezUrlManager',
             'urlFormat' => 'path',
@@ -72,9 +72,9 @@ return array(
                     'https' => 'https://toursforfun.qiniudn.com',
                 ),
             ),
-        ),
+        ),*/
         'authManager' => array('class' => 'webeez.classes.WebeezAuthManager'),
-        'numberFormatter' => array('class' => 'webeez.classes.WebeezNumberFormatter'),
+//        'numberFormatter' => array('class' => 'webeez.classes.WebeezNumberFormatter'),
         'user' => array(
             'class' => 'webeez.classes.WebeezCustomer',
             'returnUrl' => array('MyAccount/index'),
