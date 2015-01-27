@@ -38,7 +38,7 @@ if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'act/avail
 } else {
 //    require WEBEEZ_LIB . DIRECTORY_SEPARATOR . 'webeez.php';
 }
-
+//require_once('system.yii');
 require_once(YII_PATH.DIRECTORY_SEPARATOR.'yii.php');
 
 /**

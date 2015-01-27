@@ -11,6 +11,7 @@ class TransferController extends CController
 	 */
 	public function actionIndex()
 	{
+        echo 'transfer';
 //        var_dump(get_include_path());
 //        $user = User::model()->findByPk(15);
 //		echo $user->username.'   mymy my Hello World';
