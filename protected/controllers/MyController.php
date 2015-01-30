@@ -11,7 +11,7 @@ class MyController extends CController
 	public function actionIndex()
 	{
 //        var_dump(get_include_path());
-        $user = User::model()->findByPk(15);
-		echo $user->username.'   mymy my Hello World';
+//        $user = User::model()->findByPk(15);
+//		echo $user->username.'   mymy my Hello World';
 	}
 }

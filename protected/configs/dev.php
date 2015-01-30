@@ -24,9 +24,9 @@ return array(
 	'import'=>array(
 		'application.models.*',
 		'application.components.*',
-//        'application.controllers.BaseController',
+        'application.controllers.BaseController',
 //        'webeez.classes.ChineseTrans',
-//        'webeez.extensions.DomainListener',
+        'webeez.extensions.DomainListener',
 	),
     'defaultController' => 'site',
 	'modules'=>array(
@@ -55,7 +55,7 @@ return array(
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
 		),
-
+*/
         'urlManager' => array(
             'class' => 'webeez.classes.WebeezUrlManager',
             'urlFormat' => 'path',
@@ -72,7 +72,7 @@ return array(
                     'https' => 'https://toursforfun.qiniudn.com',
                 ),
             ),
-        ),*/
+        ),
         'authManager' => array('class' => 'webeez.classes.WebeezAuthManager'),
 //        'numberFormatter' => array('class' => 'webeez.classes.WebeezNumberFormatter'),
         'user' => array(
@@ -82,13 +82,13 @@ return array(
             'allowAutoLogin' => true
         ),
 		'db'=>array(
-//			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
-            'class' => 'webeez.extensions.DbConnection', //CDbConnection
-            'emulatePrepare' => true,
-            'charset' => 'utf8',
-            'connectionString' => 'mysql:host=localhost;dbname=transfer',
-            'username' => 'root',
-            'password' => 'root'
+			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/hpw.db',
+//            'class' => 'webeez.extensions.DbConnection', //CDbConnection
+//            'emulatePrepare' => true,
+//            'charset' => 'utf8',
+//            'connectionString' => 'mysql:host=localhost;dbname=transfer',
+//            'username' => 'root',
+//            'password' => 'root'
 		),
 		// uncomment the following to use a MySQL database
 		/*
