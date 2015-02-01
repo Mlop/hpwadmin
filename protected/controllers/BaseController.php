@@ -109,10 +109,10 @@ class BaseController  extends CController{
 
     public function __construct($id,$module = null){
         //2013-12-20, eric, check whether the request comes from a affiliate site(user use a sub-domain)
-        $this->is_affiliate_site_request = DomainListener::isAffiliateSiteRequest();
-        //20140505 vincent . filter XSS str for PCI scan.
-        $_GET = secure_array($_GET);
-        $_POST = secure_array($_POST);
+//        $this->is_affiliate_site_request = DomainListener::isAffiliateSiteRequest();
+//        //20140505 vincent . filter XSS str for PCI scan.
+//        $_GET = secure_array($_GET);
+//        $_POST = secure_array($_POST);
         $isGuest = Yii::app()->user->isGuest;
         // do not remove this, this configure is for website affiliate
 //        if(IS_QA_SITE){
@@ -153,42 +153,42 @@ class BaseController  extends CController{
 ////            }
 //        }
 
-        $this->sysCurrStoreId = isset(Yii::app()->params['storeId']) ?Yii::app()->params['storeId'] : 2 ;
-
-		$host = $_SERVER['HTTP_HOST'];
-		//fix domain
-		if($host == 'toursforfun.com'){
-			$this->redirect('http://cn.toursforfun.com' . Yii::app()->request->requestUri, true, 301);
-		}
+//        $this->sysCurrStoreId = isset(Yii::app()->params['storeId']) ?Yii::app()->params['storeId'] : 2 ;
+//
+//		$host = $_SERVER['HTTP_HOST'];
+//		//fix domain
+//		if($host == 'toursforfun.com'){
+//			$this->redirect('http://cn.toursforfun.com' . Yii::app()->request->requestUri, true, 301);
+//		}
 //        if(TOURS_HOMEPAGE_BAIDU_AUDIT == 'on'){
 //            $this->defineNewLanguageID();
 //        }else{
 //            $this->defineLanguageID();
 //        }
 
-        if(LANGUAGE_ID == 'tw'){
-            Yii::app()->language = 'zh_cn';
-            $this->language = Yii::app()->language;
-            $this->language_name = 'tchinese';
-            $this->language_id = Yii::app()->params['languageId'];
-            if(!$_REQUEST['raw'] && !$_POST['raw'] && !$_GET['raw']) {
-                $_REQUEST = $this->convertArrayToSChinese($_REQUEST);
-                $_GET = $this->convertArrayToSChinese($_GET);
-                $_POST = $this->convertArrayToSChinese($_POST);
-            }
-        }else{
-            Yii::app()->language = 'zh_cn';
-            $this->language = Yii::app()->language;
-            $this->language_name = 'schinese';
-            $this->language_id = Yii::app()->params['languageId'];
-        }
-
-        //make a site click by eric
-        try {
-            $this->makeSiteClickStat();
-        } catch (Exception $e) {
-            //will handle after soon
-        }
+//        if(LANGUAGE_ID == 'tw'){
+//            Yii::app()->language = 'zh_cn';
+//            $this->language = Yii::app()->language;
+//            $this->language_name = 'tchinese';
+//            $this->language_id = Yii::app()->params['languageId'];
+//            if(!$_REQUEST['raw'] && !$_POST['raw'] && !$_GET['raw']) {
+//                $_REQUEST = $this->convertArrayToSChinese($_REQUEST);
+//                $_GET = $this->convertArrayToSChinese($_GET);
+//                $_POST = $this->convertArrayToSChinese($_POST);
+//            }
+//        }else{
+//            Yii::app()->language = 'zh_cn';
+//            $this->language = Yii::app()->language;
+//            $this->language_name = 'schinese';
+//            $this->language_id = Yii::app()->params['languageId'];
+//        }
+//
+//        //make a site click by eric
+//        try {
+//            $this->makeSiteClickStat();
+//        } catch (Exception $e) {
+//            //will handle after soon
+//        }
 
         //we just add catalogSecureUrl,catalogUrl to params. this config will overrite urlManager's config. by vincent
 //        Yii::app()->urlManager->secureHost = Yii::app()->params['catalogSecureUrl'];
@@ -204,8 +204,8 @@ class BaseController  extends CController{
         $this->session = Yii::app()->getSession();
         $this->session->open();
 
-        //customer_id session
-        $this->session['customer_id'] = Yii::app()->user->id;
+//        //customer_id session
+//        $this->session['customer_id'] = Yii::app()->user->id;
 
 //        $this->navigation = new NavigationHistory();
         $this->baseUrl = Yii::app()->baseUrl;
@@ -216,7 +216,7 @@ class BaseController  extends CController{
         $this->mainImagesabsuPath = Yii::app()->params['mainImagesabsuPath'];
 
         //Group Ordering
-        if(!defined('GROUP_BUY_ON')) define('GROUP_BUY_ON',true); //Group Ordering power switch
+//        if(!defined('GROUP_BUY_ON')) define('GROUP_BUY_ON',true); //Group Ordering power switch
     }
     /**
      * Returns a value indicating whether there is any validation error.
@@ -842,26 +842,6 @@ class BaseController  extends CController{
         }
     }
 
-    /**
-     * add a error message
-     * @param string $key
-     * @param string $message
-     */
-//    public function addError($key, $message){
-//        if(isset($this->error[$key])){
-//            $this->error[$key].=','.$message;
-//        }else{
-//            $this->error[$key]=$message;
-//        }
-//    }
-//
-//    /**
-//     * get errir message
-//     */
-//    public function getError(){
-//        return $this->error;
-//    }
-
     public function send($to, $subject, $content, $from = '', $reply='', $attachements = array()) {
         return Yii::app()->mailer->send(
             $this->convertChinese($to),
@@ -917,50 +897,7 @@ class BaseController  extends CController{
      */
     public function afterLogin()
     {
-        $now = Yii::app()->db->createCommand("SELECT NOW() cur_time")->queryScalar();
-        $today = date('Y-m-d 00:00:00', strtotime($now));
-        $expHis = Yii::app()->db->createCommand()
-            ->select('customer_id')
-            ->from(CustomerExperienceHistory::model()->tableName())
-            ->where('customer_id = :customer_id AND type = :type AND created > :today')
-            ->bindValues(
-                array(
-                    'customer_id' => Yii::app()->user->id,
-                    'today' => $today,
-                    'type' => CustomerExperienceHistory::EXP_PLUS_LOGIN
-                )
-            )
-            ->queryScalar();
-        if (!$expHis) {
-            Customer::addExperience(Yii::app()->user->id, CustomerExperienceHistory::EXP_PLUS_LOGIN, $now);
-        }
-        $cookies = Yii::app()->request->getCookies();
-        $after_login = unserialize($cookies['after_login']->value);
 
-        // pop banner start
-        $pop_banner = CJSON::decode(POP_BANNER_SETTINGS);
-        $now = time();
-        if ($pop_banner[LANGUAGE_ID]['active'] && ($now > $pop_banner[LANGUAGE_ID]['start_date']) && ($now < $pop_banner[LANGUAGE_ID]['end_date'])) {
-            if (empty(Yii::app()->request->cookies['pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id']]->value)) {
-                $CHttpCookie                                    = new CHttpCookie('pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id'], 'on');
-                $CHttpCookie->expire                            = time() + $pop_banner[LANGUAGE_ID]['cookie_expire'];
-                $CHttpCookie->path                              = $this->cookie_path;
-                $CHttpCookie->domain                            = $this->cookie_domain;
-                Yii::app()->request->cookies['pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id']] = $CHttpCookie;
-            }
-        } else {
-            if (!empty(Yii::app()->request->cookies['pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id']]->value)) {
-                Yii::app()->request->cookies->remove('pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id']);
-                setcookie('pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id'], null, 0, $this->cookie_path, $this->cookie_domain);
-            }
-        }
-        // pop banner end
-
-		if($after_login && count($after_login) > 0) {
-			$this->redirect(array_pop($after_login));
-		} else {
-			$this->redirect($this->createUrl('MyAccount/index'),true);
-		}
 	}
 
     /**

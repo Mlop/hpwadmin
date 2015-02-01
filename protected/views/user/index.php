@@ -1,11 +1,29 @@
-<?php
-/* @var $this UserController */
-$this->breadcrumbs->add('User', $this->createUrl('site/index'));
-?>
-<h1><?php $this->breadcrumbs->display()?>
-    <?php echo $this->id . '/' . $this->action->id; ?></h1>
-
-<p>
-	You may change the content of this page by modifying
-	the file <tt><?php echo __FILE__; ?></tt>.
-</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary">记账</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    今年收账：30000
+                </div>
+                <div class="panel-body">
+                    <div id="thisyear" class="main"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    去年收账：30000
+                </div>
+                <div class="panel-body">
+                    <div id="lastyear" class="main"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -62,8 +62,8 @@ return array(
             'caseSensitive' => true,
             'showScriptName' => false,
             'rules' => include('route.php'),
-            'secureHost' => 'http://www.hpw-vera.com',
-            'commonHost' => 'http://www.hpw-vera.com',
+            'secureHost' => 'http://local.hpw-vera.com',
+            'commonHost' => 'http://local.hpw-vera.com',
             'cdn' => array(
                 // provider => domain
                 //'default' => 'xxx.rackcdn.com', // Note: just domain here, no schema
@@ -74,15 +74,19 @@ return array(
             ),
         ),
         'authManager' => array('class' => 'webeez.classes.WebeezAuthManager'),
+        'clientScript' => array(
+            'class' => 'webeez.classes.WebeezClientScript',
+            'scriptMap' => array('jquery.js' => '/js/jquery.js', 'jquery.min.js' => false)
+        ),
 //        'numberFormatter' => array('class' => 'webeez.classes.WebeezNumberFormatter'),
         'user' => array(
             'class' => 'webeez.classes.WebeezCustomer',
-            'returnUrl' => array('site/page?view=about'),
-            'loginUrl' => array('Account/login'),
+            'returnUrl' => array('user/index'),
+            'loginUrl' => array('user/login'),
             'allowAutoLogin' => true
         ),
 		'db'=>array(
-			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/hpw.db',
+			'connectionString' => 'sqlite:/vagrant/hpw/hpw.db',
 //            'class' => 'webeez.extensions.DbConnection', //CDbConnection
 //            'emulatePrepare' => true,
 //            'charset' => 'utf8',
