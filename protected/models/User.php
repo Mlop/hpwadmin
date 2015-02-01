@@ -18,6 +18,10 @@ class User extends CActiveRecord
 {
     public $name;
     public $password;
+    public $oldpassword;
+    public $newpassword;
+    public $retrypassword;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -35,14 +39,69 @@ class User extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'length', 'max'=>100),
-			array('password', 'length', 'max'=>50),
+            array('name', 'unique', 'on'=>'register'),
+			array('password', 'length', 'max'=>50, 'min'=>4),
 			array('add_time, last_login_time', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('user_id, name, password, add_time, last_login_time', 'safe', 'on'=>'search'),
+            // when reset password normal
+            array('name, oldpassword', 'required', 'on'=>'resetpasswd'),
+            array('oldpassword', 'authenticate_oldpasswd', 'on'=>'resetpasswd'),
+            array('newpassword', 'length', 'max'=>50,'min'=>4, 'on'=>'resetpasswd'),
+            array('newpassword', 'authenticate', 'on'=>'resetpasswd'),
+            array('retrypassword', 'compare', 'compareAttribute'=>'newpassword', 'on'=>'resetpasswd'),
+            // when reset password by admin
+            array('name', 'required', 'on'=>'adminresetpwd'),
+            array('newpassword', 'length', 'max'=>50,'min'=>4, 'on'=>'adminresetpwd'),
+            array('newpassword', 'authenticate', 'on'=>'adminresetpwd'),
+            array('retrypassword', 'compare', 'compareAttribute'=>'newpassword', 'on'=>'adminresetpwd'),
 		);
 	}
+    /**
+     * Authenticates the password.
+     * This is the 'authenticate' validator as declared in rules().
+     */
+    public function authenticate_oldpasswd($attribute, $params)
+    {
+        $user = User::model()->findByAttributes(array('name'=>$this->name));
+        if (count($user) == 0) {
+            $this->addError('name', 'the user not exists.');
+        } else {
+            if (User::validatePassword($user->password, $this->oldpassword) === false) {
+                $this->addError('oldpassword', 'the password incorrect.');
+            }
+        }
+    }
 
+    /**
+     * Authenticates the password.
+     * This is the 'authenticate' validator as declared in rules().
+     */
+    public function authenticate($attribute,$params)
+    {
+        $len = strlen($this->$attribute);
+
+        if ($len < 4) {
+            $this->addError($attribute, 'the length must greater than four characters.');
+        }
+//        if (preg_match('/^[a-z0-9]+$/',$this->password) == 1){
+//            $this->addError('password','too simple.');
+//        }
+//        $userCount = User::model()->countByAttributes(array('name'=>$this->name));
+//        if ($userCount > 0) {
+//            $this->addError('name','the name '.$this->name.' had exist yet.');
+//        }
+    }
+
+    /**
+     * Authenticates the password.
+     * This is the 'authenticate' validator as declared in rules().
+     */
+    public function authenticate_newpasswd($attribute, $params)
+    {
+
+    }
 	/**
 	 * @return array relational rules.
 	 */

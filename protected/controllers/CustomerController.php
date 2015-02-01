@@ -4,33 +4,66 @@ class CustomerController extends BaseController
 {
 	public function actionIndex()
 	{
-		$this->render('index');
+        $mode = Customer::model()->findAll();
+        $this->render("list", array('data'=>$mode));
 	}
 
-	// Uncomment the following methods and override them if needed
-	/*
-	public function filters()
-	{
-		// return the filter configuration for this controller, e.g.:
-		return array(
-			'inlineFilterName',
-			array(
-				'class'=>'path.to.FilterClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
+    /**
+     * create a record into customer db
+     */
+    public function actionCreate()
+    {
+        $customer_id = Yii::app()->request->getParam('customer_id');
+        $customerForm = Yii::app()->request->getParam('CustomerForm');
+        if (!is_null($customerForm)) {
+            try {
+                //modify
+                if ($customer_id) {
+                    $updateModel = Customer::model()->findByPk($customer_id);
+                    $updateModel->setAttributes($customerForm);
+                    $updateModel->save();
+                } else {//new record
+                    $model = Customer::model();
+                    $model->setAttributes($customerForm);
+                    $model->setIsNewRecord(true);
+                    $model->save();
+                }
+            } catch (Exception $ex) {
+                $this->addError($ex->getMessage());
+            }
+            echo 'save successfully';
+        }
 
-	public function actions()
-	{
-		// return external action classes, e.g.:
-		return array(
-			'action1'=>'path.to.ActionClass',
-			'action2'=>array(
-				'class'=>'path.to.AnotherActionClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-	*/
+        $formModel = new CustomerForm;
+        //fill form when modify
+        if ($customer_id) {
+            $formModel->attributes = Customer::model()->findByPk($customer_id)->getAttributes();
+        }
+        $this->render("form", array('model'=>$formModel));
+    }
+
+    /**
+     * delete a customer record, include incount and outcount record
+     */
+    public function actionDelete()
+    {
+        $customer_id = Yii::app()->request->getParam('customer_id');
+        $return = array('error'=>0, 'msg'=>'');
+        if ($customer_id) {
+            try {
+                Incount::model()->deleteAllByAttributes(array('customer_id'=>$customer_id));
+                Outcount::model()->deleteAllByAttributes(array('customer_id'=>$customer_id));
+                Customer::model()->deleteByPk($customer_id);
+            } catch (Exception $ex) {
+                $return = array('error'=>1, 'msg'=>'delete error');
+                echo CJSON::encode($return);
+                return;
+            }
+            echo CJSON::encode($return);
+        } else {
+            $return = array('error'=>1, 'msg'=>'no id');
+            echo CJSON::encode($return);
+            return;
+        }
+    }
 }

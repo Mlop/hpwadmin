@@ -102,6 +102,7 @@ class BaseController  extends CController{
      * parameter for checking guest. true/false
      */
     public $isGuest = true;
+    public $isLogin = true;
     /**
      * @var array errors should show on views
      */
@@ -110,10 +111,13 @@ class BaseController  extends CController{
     public function __construct($id,$module = null){
         //2013-12-20, eric, check whether the request comes from a affiliate site(user use a sub-domain)
 //        $this->is_affiliate_site_request = DomainListener::isAffiliateSiteRequest();
-//        //20140505 vincent . filter XSS str for PCI scan.
-//        $_GET = secure_array($_GET);
-//        $_POST = secure_array($_POST);
-        $isGuest = Yii::app()->user->isGuest;
+        //20140505 vincent . filter XSS str for PCI scan.
+        $_GET = secure_array($_GET);
+        $_POST = secure_array($_POST);
+        $isGuest = Yii::app()->user->getIsGuest();
+//        $isLogin = Yii::app()->user->isLogin;
+        Yii::app()->setLanguage('zh_cn');
+        parent::__construct($id,$module);
         // do not remove this, this configure is for website affiliate
 //        if(IS_QA_SITE){
 //            Yii::app()->params['domain'] = '.qa.toursforfun.com';
@@ -156,7 +160,7 @@ class BaseController  extends CController{
 //        $this->sysCurrStoreId = isset(Yii::app()->params['storeId']) ?Yii::app()->params['storeId'] : 2 ;
 //
 //		$host = $_SERVER['HTTP_HOST'];
-//		//fix domain
+		//fix domain
 //		if($host == 'toursforfun.com'){
 //			$this->redirect('http://cn.toursforfun.com' . Yii::app()->request->requestUri, true, 301);
 //		}
@@ -166,58 +170,35 @@ class BaseController  extends CController{
 //            $this->defineLanguageID();
 //        }
 
-//        if(LANGUAGE_ID == 'tw'){
-//            Yii::app()->language = 'zh_cn';
-//            $this->language = Yii::app()->language;
-//            $this->language_name = 'tchinese';
-//            $this->language_id = Yii::app()->params['languageId'];
-//            if(!$_REQUEST['raw'] && !$_POST['raw'] && !$_GET['raw']) {
-//                $_REQUEST = $this->convertArrayToSChinese($_REQUEST);
-//                $_GET = $this->convertArrayToSChinese($_GET);
-//                $_POST = $this->convertArrayToSChinese($_POST);
-//            }
-//        }else{
-//            Yii::app()->language = 'zh_cn';
-//            $this->language = Yii::app()->language;
-//            $this->language_name = 'schinese';
-//            $this->language_id = Yii::app()->params['languageId'];
-//        }
-//
-//        //make a site click by eric
-//        try {
-//            $this->makeSiteClickStat();
-//        } catch (Exception $e) {
-//            //will handle after soon
-//        }
 
         //we just add catalogSecureUrl,catalogUrl to params. this config will overrite urlManager's config. by vincent
 //        Yii::app()->urlManager->secureHost = Yii::app()->params['catalogSecureUrl'];
 //        Yii::app()->urlManager->commonHost = Yii::app()->params['catalogUrl'];
 
-        parent::__construct($id,$module);
 
-        $this->layout = 'common_layout';
-
+//使用模板
+//        $this->layout = 'common_layout';
         $this->breadcrumbs = new Breadcrumbs();
-        $this->breadcrumbs->add('首页', $this->createUrl('site/index'));
-
-        $this->session = Yii::app()->getSession();
-        $this->session->open();
-
+        $this->breadcrumbs->add('Home', Yii::app()->homeUrl);
+////
+//        $this->session = Yii::app()->getSession();
+//        $this->session->open();
+//
 //        //customer_id session
 //        $this->session['customer_id'] = Yii::app()->user->id;
-
-//        $this->navigation = new NavigationHistory();
-        $this->baseUrl = Yii::app()->baseUrl;
-
-        $this->cookie_domain = Yii::app()->params['cookieDomain'];
-        $this->cookie_path = '/';
-
-        $this->mainImagesabsuPath = Yii::app()->params['mainImagesabsuPath'];
-
-        //Group Ordering
+//
+////        $this->navigation = new NavigationHistory();
+//        $this->baseUrl = Yii::app()->baseUrl;
+//
+//        $this->cookie_domain = Yii::app()->params['cookieDomain'];
+//        $this->cookie_path = '/';
+//
+//        $this->mainImagesabsuPath = Yii::app()->params['mainImagesabsuPath'];
+//
+//        //Group Ordering
 //        if(!defined('GROUP_BUY_ON')) define('GROUP_BUY_ON',true); //Group Ordering power switch
     }
+
     /**
      * Returns a value indicating whether there is any validation error.
      * @param string $attribute attribute name. Use null to check all attributes.
@@ -296,269 +277,269 @@ class BaseController  extends CController{
      * @todo initialize affiliate site
      * @name initializeAffiliateSite
      */
-    private function initializeAffiliateSite($id,$module){
-        $this->affiliateSiteHelper = AffiliateSiteHelper::getInstance();
-        // 在网站联盟里面先清空亿起发数据
-        Yii::app()->request->cookies->remove('customers_advertiser');
-        setcookie('customers_advertiser', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('customers_ad_click_id');
-        setcookie('customers_ad_click_id', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('yiqifa_cid');
-        setcookie('yiqifa_cid', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('yiqifa_wi');
-        setcookie('yiqifa_wi', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('yiqifa_interId');
-        setcookie('yiqifa_interId', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('linkTech_aid');
-        setcookie('linkTech_aid', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('chanet_sid');
-        setcookie('chanet_sid', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('duomai_euid');
-        setcookie('duomai_euid', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('duomai_mid');
-        setcookie('duomai_mid', null, 0, $this->cookie_path, $this->cookie_domain);
-        Yii::app()->request->cookies->remove('pampa_cid');
-        setcookie('pampa_cid', null, 0, '/', Yii::app()->params['cookieDomain']);
-        Yii::app()->request->cookies->remove('pampa_aid');
-        setcookie('pampa_aid', null, 0, '/', Yii::app()->params['cookieDomain']);
-        Yii::app()->request->cookies->remove('pampa_ref');
-        setcookie('pampa_ref', null, 0, '/', Yii::app()->params['cookieDomain']);
-
-        //if the request comes from an illegal affiliate domain, then return a 404 error of main site
-        if(!$this->affiliateSiteHelper->isValidDomain()){
-            // get main site host
-            $_host = DomainListener::getMainSiteHost();
-            // jump to the 404 page of the main site
-            $this->redirect('http://'.$_host.'/error404.html');
-            exit;
-        }
-        $this->affiliateSiteId = $this->affiliateSiteHelper->getAffiliateId();
-        // check whether the current page is a valid list page
-        // if not, then redirect to 404 page of current site
-        if(!$this->affiliateSiteHelper->isValidPage()){
-            $this->redirect('/error404.html');
-            exit;
-        }
-        
-        //Make all define accessible to all pages
-        Configuration::loadConstants();
-
-        $this->imagesUrl = cdn_images_url();
-        $this->imageUrl = cdn_image_url();
-
-        $this->sysCurrStoreId = isset(Yii::app()->params['storeId']) ?Yii::app()->params['storeId'] : 2 ;
-        $language = $this->affiliateSiteHelper->getPageLanguage();
-        define('LANGUAGE_ID' , $language);
-        setcookie('language', $language, time() + 3600*24*365*10, '/', Yii::app()->params['cookieDomain']);
-        if(LANGUAGE_ID == 'tw'){
-            Yii::app()->language = 'zh_cn';
-            $this->language = Yii::app()->language;
-            $this->language_name = 'tchinese';
-            $this->language_id = Yii::app()->params['languageId'];
-            if(!$_REQUEST['raw'] && !$_POST['raw'] && !$_GET['raw']) {
-                $_REQUEST = $this->convertArrayToSChinese($_REQUEST);
-                $_GET = $this->convertArrayToSChinese($_GET);
-                $_POST = $this->convertArrayToSChinese($_POST);
-            }
-        }else{
-            Yii::app()->language = 'zh_cn';
-            $this->language = Yii::app()->language;
-            $this->language_name = 'schinese';
-            $this->language_id = Yii::app()->params['languageId'];
-        }
-
-        //change configs for Affiliate Website
-        if(IS_DEV_SITE || IS_QA_SITE){
-            Yii::app()->params['catalogSecureUrl'] = 'http://'.$_SERVER['HTTP_HOST'];
-        }else{
-            Yii::app()->params['catalogSecureUrl'] = 'https://'.$_SERVER['HTTP_HOST'];
-        }
-        if(IS_QA_SITE){
-            Yii::app()->params['domain'] = '.qa.toursforfun.com';
-        }
-        Yii::app()->params['catalogUrl'] = 'http://'.$_SERVER['HTTP_HOST'];;
-
-        //we just add catalogSecureUrl,catalogUrl to params. this config will overrite urlManager's config. by vincent
-        Yii::app()->urlManager->secureHost = Yii::app()->params['catalogSecureUrl'];
-        Yii::app()->urlManager->commonHost = Yii::app()->params['catalogUrl'];
-
-        parent::__construct($id,$module);
-
-        $this->layout = 'affiliate_common_layout';
-
-        $this->breadcrumbs = new Breadcrumbs();
-        $this->breadcrumbs->add(Yii::t('main','首页'), $this->createUrl('site/index'));
-
-        $this->session = Yii::app()->getSession();
-        $this->session->open();
-
-        //customer_id session
-        $this->session['customer_id'] = Yii::app()->user->id;
-
-        $this->navigation = new NavigationHistory();
-        $this->baseUrl = Yii::app()->baseUrl;
-
-        $this->cookie_domain = Yii::app()->params['cookieDomain'];
-        $this->cookie_path = '/';
-
-        $this->mainImagesabsuPath = Yii::app()->params['mainImagesabsuPath'];
-
-        //Group Ordering
-        if(!defined('GROUP_BUY_ON')) define('GROUP_BUY_ON',true); //Group Ordering power switch
-        if(!defined('GROUP_MIN_GUEST_NUM'))define('GROUP_MIN_GUEST_NUM',10); //the minumium guests for group ordering
-        if(!defined('DISCOUNT_PERCENTAGE'))define('DISCOUNT_PERCENTAGE', 0.05); //discount percentage 5%
-        if(!defined('DECIMAL_DIGITS'))define('DECIMAL_DIGITS',0); //the decimal fordiscount, rouded up the decimal
-        if(!defined('GROUP_BUY_INCLUDE_SUB_TOUR'))define('GROUP_BUY_INCLUDE_SUB_TOUR',true); //whether including short itinerary tours which don't have rooms option
-
-        //Set Cookie if the customer comes back and orders it counts
-        $CHttpCookie                                        = new CHttpCookie('is_affiliate_site', 1);
-        $CHttpCookie->expire                                = time() + AFFILIATE_COOKIE_LIFETIME;
-        $CHttpCookie->path                                  = $this->cookie_path;
-        $CHttpCookie->domain                                = $this->cookie_domain;
-        Yii::app()->request->cookies['is_affiliate_site']   = $CHttpCookie;
-
-        $CHttpCookie                                    = new CHttpCookie('affiliate_ref', $this->affiliateSiteHelper->getAffiliateId());
-        $CHttpCookie->expire                            = time() + AFFILIATE_COOKIE_LIFETIME;
-        $CHttpCookie->path                              = $this->cookie_path;
-        $CHttpCookie->domain                            = $this->cookie_domain;
-        Yii::app()->request->cookies['affiliate_ref']   = $CHttpCookie;
-
-        //add css and js by Tuzki
-        Yii::app()->clientScript->registerCssFile(Yii::app()->baseUrl . "/css/base.css");
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/js/jquery.js");
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/js/base.js");
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/js/big5.js");
-
-        //set page meta info
-        $this->setPageTitle($this->affiliateSiteHelper->getPageTitle());
-        $this->pageDesc = $this->affiliateSiteHelper->getPageDescription();
-        $this->pageKey = $this->affiliateSiteHelper->getPageKeywords();
-    }
+//    private function initializeAffiliateSite($id,$module){
+//        $this->affiliateSiteHelper = AffiliateSiteHelper::getInstance();
+//        // 在网站联盟里面先清空亿起发数据
+//        Yii::app()->request->cookies->remove('customers_advertiser');
+//        setcookie('customers_advertiser', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('customers_ad_click_id');
+//        setcookie('customers_ad_click_id', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('yiqifa_cid');
+//        setcookie('yiqifa_cid', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('yiqifa_wi');
+//        setcookie('yiqifa_wi', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('yiqifa_interId');
+//        setcookie('yiqifa_interId', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('linkTech_aid');
+//        setcookie('linkTech_aid', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('chanet_sid');
+//        setcookie('chanet_sid', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('duomai_euid');
+//        setcookie('duomai_euid', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('duomai_mid');
+//        setcookie('duomai_mid', null, 0, $this->cookie_path, $this->cookie_domain);
+//        Yii::app()->request->cookies->remove('pampa_cid');
+//        setcookie('pampa_cid', null, 0, '/', Yii::app()->params['cookieDomain']);
+//        Yii::app()->request->cookies->remove('pampa_aid');
+//        setcookie('pampa_aid', null, 0, '/', Yii::app()->params['cookieDomain']);
+//        Yii::app()->request->cookies->remove('pampa_ref');
+//        setcookie('pampa_ref', null, 0, '/', Yii::app()->params['cookieDomain']);
+//
+//        //if the request comes from an illegal affiliate domain, then return a 404 error of main site
+//        if(!$this->affiliateSiteHelper->isValidDomain()){
+//            // get main site host
+//            $_host = DomainListener::getMainSiteHost();
+//            // jump to the 404 page of the main site
+//            $this->redirect('http://'.$_host.'/error404.html');
+//            exit;
+//        }
+//        $this->affiliateSiteId = $this->affiliateSiteHelper->getAffiliateId();
+//        // check whether the current page is a valid list page
+//        // if not, then redirect to 404 page of current site
+//        if(!$this->affiliateSiteHelper->isValidPage()){
+//            $this->redirect('/error404.html');
+//            exit;
+//        }
+//
+//        //Make all define accessible to all pages
+//        Configuration::loadConstants();
+//
+//        $this->imagesUrl = cdn_images_url();
+//        $this->imageUrl = cdn_image_url();
+//
+//        $this->sysCurrStoreId = isset(Yii::app()->params['storeId']) ?Yii::app()->params['storeId'] : 2 ;
+//        $language = $this->affiliateSiteHelper->getPageLanguage();
+//        define('LANGUAGE_ID' , $language);
+//        setcookie('language', $language, time() + 3600*24*365*10, '/', Yii::app()->params['cookieDomain']);
+//        if(LANGUAGE_ID == 'tw'){
+//            Yii::app()->language = 'zh_cn';
+//            $this->language = Yii::app()->language;
+//            $this->language_name = 'tchinese';
+//            $this->language_id = Yii::app()->params['languageId'];
+//            if(!$_REQUEST['raw'] && !$_POST['raw'] && !$_GET['raw']) {
+//                $_REQUEST = $this->convertArrayToSChinese($_REQUEST);
+//                $_GET = $this->convertArrayToSChinese($_GET);
+//                $_POST = $this->convertArrayToSChinese($_POST);
+//            }
+//        }else{
+//            Yii::app()->language = 'zh_cn';
+//            $this->language = Yii::app()->language;
+//            $this->language_name = 'schinese';
+//            $this->language_id = Yii::app()->params['languageId'];
+//        }
+//
+//        //change configs for Affiliate Website
+//        if(IS_DEV_SITE || IS_QA_SITE){
+//            Yii::app()->params['catalogSecureUrl'] = 'http://'.$_SERVER['HTTP_HOST'];
+//        }else{
+//            Yii::app()->params['catalogSecureUrl'] = 'https://'.$_SERVER['HTTP_HOST'];
+//        }
+//        if(IS_QA_SITE){
+//            Yii::app()->params['domain'] = '.qa.toursforfun.com';
+//        }
+//        Yii::app()->params['catalogUrl'] = 'http://'.$_SERVER['HTTP_HOST'];;
+//
+//        //we just add catalogSecureUrl,catalogUrl to params. this config will overrite urlManager's config. by vincent
+//        Yii::app()->urlManager->secureHost = Yii::app()->params['catalogSecureUrl'];
+//        Yii::app()->urlManager->commonHost = Yii::app()->params['catalogUrl'];
+//
+//        parent::__construct($id,$module);
+//
+//        $this->layout = 'affiliate_common_layout';
+//
+//        $this->breadcrumbs = new Breadcrumbs();
+//        $this->breadcrumbs->add(Yii::t('main','首页'), $this->createUrl('site/index'));
+//
+//        $this->session = Yii::app()->getSession();
+//        $this->session->open();
+//
+//        //customer_id session
+//        $this->session['customer_id'] = Yii::app()->user->id;
+//
+//        $this->navigation = new NavigationHistory();
+//        $this->baseUrl = Yii::app()->baseUrl;
+//
+//        $this->cookie_domain = Yii::app()->params['cookieDomain'];
+//        $this->cookie_path = '/';
+//
+//        $this->mainImagesabsuPath = Yii::app()->params['mainImagesabsuPath'];
+//
+//        //Group Ordering
+//        if(!defined('GROUP_BUY_ON')) define('GROUP_BUY_ON',true); //Group Ordering power switch
+//        if(!defined('GROUP_MIN_GUEST_NUM'))define('GROUP_MIN_GUEST_NUM',10); //the minumium guests for group ordering
+//        if(!defined('DISCOUNT_PERCENTAGE'))define('DISCOUNT_PERCENTAGE', 0.05); //discount percentage 5%
+//        if(!defined('DECIMAL_DIGITS'))define('DECIMAL_DIGITS',0); //the decimal fordiscount, rouded up the decimal
+//        if(!defined('GROUP_BUY_INCLUDE_SUB_TOUR'))define('GROUP_BUY_INCLUDE_SUB_TOUR',true); //whether including short itinerary tours which don't have rooms option
+//
+//        //Set Cookie if the customer comes back and orders it counts
+//        $CHttpCookie                                        = new CHttpCookie('is_affiliate_site', 1);
+//        $CHttpCookie->expire                                = time() + AFFILIATE_COOKIE_LIFETIME;
+//        $CHttpCookie->path                                  = $this->cookie_path;
+//        $CHttpCookie->domain                                = $this->cookie_domain;
+//        Yii::app()->request->cookies['is_affiliate_site']   = $CHttpCookie;
+//
+//        $CHttpCookie                                    = new CHttpCookie('affiliate_ref', $this->affiliateSiteHelper->getAffiliateId());
+//        $CHttpCookie->expire                            = time() + AFFILIATE_COOKIE_LIFETIME;
+//        $CHttpCookie->path                              = $this->cookie_path;
+//        $CHttpCookie->domain                            = $this->cookie_domain;
+//        Yii::app()->request->cookies['affiliate_ref']   = $CHttpCookie;
+//
+//        //add css and js by Tuzki
+//        Yii::app()->clientScript->registerCssFile(Yii::app()->baseUrl . "/css/base.css");
+//        Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/js/jquery.js");
+//        Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/js/base.js");
+//        Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . "/js/big5.js");
+//
+//        //set page meta info
+//        $this->setPageTitle($this->affiliateSiteHelper->getPageTitle());
+//        $this->pageDesc = $this->affiliateSiteHelper->getPageDescription();
+//        $this->pageKey = $this->affiliateSiteHelper->getPageKeywords();
+//    }
 
     /**
      * check current client is a China clent
      * @return boolean
      */
-    public function isChinaClient(){
-        $client_ip = Yii::app()->request->getUserHostAddress();
-        Yii::import('webeez.extensions.Ip2city');
-        $ip = new Ip2city();
-        return $ip->checkIpInRange($client_ip);
-    }
-
-    /**
-     * check current client is a Canada client
-     * @return boolean
-     */
-    public function isCanadaClient(){
-        //return true ; //disabled cause the SINA service is too slow .
-        $client_ip = Yii::app()->request->getUserHostAddress();
-        Yii::import('webeez.extensions.Ip2city');
-        $ip2City = new Ip2city();
-        $ipData = $ip2City->getIpData($client_ip);
-        return is_array($ipData) && $ipData['isoCode'] == 'CA' ? true : false;
-    }
+//    public function isChinaClient(){
+//        $client_ip = Yii::app()->request->getUserHostAddress();
+//        Yii::import('webeez.extensions.Ip2city');
+//        $ip = new Ip2city();
+//        return $ip->checkIpInRange($client_ip);
+//    }
+//
+//    /**
+//     * check current client is a Canada client
+//     * @return boolean
+//     */
+//    public function isCanadaClient(){
+//        //return true ; //disabled cause the SINA service is too slow .
+//        $client_ip = Yii::app()->request->getUserHostAddress();
+//        Yii::import('webeez.extensions.Ip2city');
+//        $ip2City = new Ip2city();
+//        $ipData = $ip2City->getIpData($client_ip);
+//        return is_array($ipData) && $ipData['isoCode'] == 'CA' ? true : false;
+//    }
 
     /**
      * check current is crawler
      * @return boolean
      */
-    public function isCrawler() {
-        $agent= strtolower($_SERVER['HTTP_USER_AGENT']);
-        if (!empty($agent)) {
-            $spiderSite= array(
-                'baiduspider','baiduspider-image','baiduspider-video','baiduspider-news',
-                'baiduspider-favo','baiduspider-cpro','baiduspider-ads',
-                'baiduspider','googlebot','googlebot-news','googlebot-image',
-                'googlebot-video','googlebot-mobile','mediapartners-google',
-                'adsbot-google','360spider','360spider-image','360spider-video',
-                'sosospider','slurp','youdaobot','yodaobot','sogou news spider',
-                'sogou web spider','sogou inst spider','sogou spider2','sogou blog',
-                'sogou news spider','sogou orion spider','bingbot','adidxbot','msnbot',
-                'bingpreview','yisouspider','ia_archiver','easouspider','jikespider'
-            );
-            foreach($spiderSite as $val) {
-                if (strpos($agent, $val) !== false) {
-                    return true;
-                }
-            }
-        } else {
-            return false;
-        }
-    }
+//    public function isCrawler() {
+//        $agent= strtolower($_SERVER['HTTP_USER_AGENT']);
+//        if (!empty($agent)) {
+//            $spiderSite= array(
+//                'baiduspider','baiduspider-image','baiduspider-video','baiduspider-news',
+//                'baiduspider-favo','baiduspider-cpro','baiduspider-ads',
+//                'baiduspider','googlebot','googlebot-news','googlebot-image',
+//                'googlebot-video','googlebot-mobile','mediapartners-google',
+//                'adsbot-google','360spider','360spider-image','360spider-video',
+//                'sosospider','slurp','youdaobot','yodaobot','sogou news spider',
+//                'sogou web spider','sogou inst spider','sogou spider2','sogou blog',
+//                'sogou news spider','sogou orion spider','bingbot','adidxbot','msnbot',
+//                'bingpreview','yisouspider','ia_archiver','easouspider','jikespider'
+//            );
+//            foreach($spiderSite as $val) {
+//                if (strpos($agent, $val) !== false) {
+//                    return true;
+//                }
+//            }
+//        } else {
+//            return false;
+//        }
+//    }
 
     /**
      * With the baidu review
      */
-    public function defineNewLanguageID()
-    {
-        $host = $_SERVER['HTTP_HOST'];
-        if (isset($_GET['language']) && $_GET['language'] == 'sc' || $host == 'cn.toursforfun.com') {
-            $_lang = 'sc';
-        } else {
-            $_lang = 'tw';
-        }
-        setcookie('language', $_lang, time() + 3600 * 24 * 365 * 10, '/', Yii::app()->params['cookieDomain']);
-        if (IS_PROD_SITE == true) {
-            //for prod site
-            if ($_lang == 'sc') {
-                Yii::app()->params['catalogUrl'] = 'http://cn.toursforfun.com';
-                Yii::app()->params['catalogSecureUrl'] = 'https://cn.toursforfun.com';
-            } else {
-                Yii::app()->params['catalogUrl'] = 'http://www.toursforfun.com';
-                Yii::app()->params['catalogSecureUrl'] = 'https://www.toursforfun.com';
-            }
-        }
-        define('LANGUAGE_ID', $_lang);
-        return $_lang;
-    }
+//    public function defineNewLanguageID()
+//    {
+//        $host = $_SERVER['HTTP_HOST'];
+//        if (isset($_GET['language']) && $_GET['language'] == 'sc' || $host == 'cn.toursforfun.com') {
+//            $_lang = 'sc';
+//        } else {
+//            $_lang = 'tw';
+//        }
+//        setcookie('language', $_lang, time() + 3600 * 24 * 365 * 10, '/', Yii::app()->params['cookieDomain']);
+//        if (IS_PROD_SITE == true) {
+//            //for prod site
+//            if ($_lang == 'sc') {
+//                Yii::app()->params['catalogUrl'] = 'http://cn.toursforfun.com';
+//                Yii::app()->params['catalogSecureUrl'] = 'https://cn.toursforfun.com';
+//            } else {
+//                Yii::app()->params['catalogUrl'] = 'http://www.toursforfun.com';
+//                Yii::app()->params['catalogSecureUrl'] = 'https://www.toursforfun.com';
+//            }
+//        }
+//        define('LANGUAGE_ID', $_lang);
+//        return $_lang;
+//    }
     /**
      * AS marketing required . Spider skip the language guess process
      */
-    public function defineLanguageID(){
-        $host = $_SERVER['HTTP_HOST'];
-        $domainLanguage = $host == 'cn.toursforfun.com' || $host == 'gb.toursforfun.com' || $host == 'toursforfun.com' ? 'sc':'tw';
+//    public function defineLanguageID(){
+//        $host = $_SERVER['HTTP_HOST'];
+//        $domainLanguage = $host == 'cn.toursforfun.com' || $host == 'gb.toursforfun.com' || $host == 'toursforfun.com' ? 'sc':'tw';
+//
+//        if($this->isCrawler()){
+//            define('LANGUAGE_ID' , $domainLanguage);
+//            return $domainLanguage; //crawler will not check language setting
+//        }
+//
+//		$_lang = 'tw';
+//
+//		if(isset($_GET['language'])) {
+//			$getLanguage = strtolower(trim($_GET['language']));
+//			$_lang = $getLanguage == 'sc' || $getLanguage == 'cn'? 'sc':'tw';
+//		}else if(isset($_COOKIE['language']) &&  ( $_COOKIE['language'] == 'sc' || $_COOKIE['language'] == 'tw' )){
+//			$_lang = $_COOKIE['language'];
+//		}else{
+//			if($this->isChinaClient()){
+//				$_lang = 'sc';
+//			}else{
+//				$_lang = 'tw';
+//			}
+//		}
+//		setcookie('language' ,$_lang ,time() +3600*24*365*10,'/',Yii::app()->params['cookieDomain']);
+//		if(IS_PROD_SITE == true){
+//			//for prod site
+//			if($_lang == 'sc'){
+//				Yii::app()->params['catalogUrl'] = 'http://cn.toursforfun.com';
+//				Yii::app()->params['catalogSecureUrl'] = 'https://cn.toursforfun.com';
+//			}else{
+//				Yii::app()->params['catalogUrl'] = 'http://www.toursforfun.com';
+//				Yii::app()->params['catalogSecureUrl'] = 'https://www.toursforfun.com';
+//			}
+//			if($_lang != $domainLanguage){
+//				$jump = $_lang == 'sc'? 'http://cn.toursforfun.com'.Yii::app()->request->requestUri : 'http://www.toursforfun.com'.Yii::app()->request->requestUri;
+//				$this->redirect($jump);
+//			}
+//		}
+//		define('LANGUAGE_ID' , $_lang);
+//		return $_lang;
+//	}
 
-        if($this->isCrawler()){
-            define('LANGUAGE_ID' , $domainLanguage);
-            return $domainLanguage; //crawler will not check language setting
-        }
 
-		$_lang = 'tw';
-
-		if(isset($_GET['language'])) {
-			$getLanguage = strtolower(trim($_GET['language']));
-			$_lang = $getLanguage == 'sc' || $getLanguage == 'cn'? 'sc':'tw';
-		}else if(isset($_COOKIE['language']) &&  ( $_COOKIE['language'] == 'sc' || $_COOKIE['language'] == 'tw' )){
-			$_lang = $_COOKIE['language'];
-		}else{
-			if($this->isChinaClient()){
-				$_lang = 'sc';
-			}else{
-				$_lang = 'tw';
-			}
-		}
-		setcookie('language' ,$_lang ,time() +3600*24*365*10,'/',Yii::app()->params['cookieDomain']);
-		if(IS_PROD_SITE == true){
-			//for prod site
-			if($_lang == 'sc'){
-				Yii::app()->params['catalogUrl'] = 'http://cn.toursforfun.com';
-				Yii::app()->params['catalogSecureUrl'] = 'https://cn.toursforfun.com';
-			}else{
-				Yii::app()->params['catalogUrl'] = 'http://www.toursforfun.com';
-				Yii::app()->params['catalogSecureUrl'] = 'https://www.toursforfun.com';
-			}
-			if($_lang != $domainLanguage){
-				$jump = $_lang == 'sc'? 'http://cn.toursforfun.com'.Yii::app()->request->requestUri : 'http://www.toursforfun.com'.Yii::app()->request->requestUri;
-				$this->redirect($jump);
-			}
-		}
-		define('LANGUAGE_ID' , $_lang);
-		return $_lang;
-	}
-
-
-    public function init(){
+//    public function init(){
 //        $this->cart = new ShoppingCart();
 //        $this->order = new Orders();
 //        $this->customers_advertiser = Yii::app()->request->cookies['customers_advertiser']->value;
@@ -567,7 +548,7 @@ class BaseController  extends CController{
 //        if(!Yii::app()->user->isGuest) {
 //            $this->authCustomer = Customer::model()->findByPk(Yii::app()->user->id);
 //        }
-    }
+//    }
 
     /**
      * set meta tag <description>
@@ -590,34 +571,34 @@ class BaseController  extends CController{
      * @param string $https schema to use (e.g. http, https). If empty, the schema used for the current request will be used.
      * @author vincent.mi@toursforfun.com (2012-2-24)
      */
-    private function _createUrlWithForward($route,$absoluteUrl = false ,$exclude = null , $include = null,$https = ''){
-        //$forwardParams = $_GET;
-        $forwardParams = array();
-        if($exclude != null){
-            if(is_string($exclude)){
-                $exclude = explode(',',$exclude);
-            }
-            $exclude =(array)$exclude;
-            foreach($exclude as $key){
-                unset($forwardParams[$key]);
-            }
-        }
-
-        if( $include != null || $include != ''){
-            $insertArr = array();
-            if(is_string($include)){
-                parse_str($include , $insertArr);
-            }else{
-                $insertArr = (array)$include;
-            }
-            $forwardParams = array_merge($forwardParams , $insertArr);
-        }
-        if($absoluteUrl == true){
-            return $this->createAbsoluteUrl($route,$forwardParams,$https);
-        }else{
-            return $this->createUrl($route,$forwardParams,$https);
-        }
-    }
+//    private function _createUrlWithForward($route,$absoluteUrl = false ,$exclude = null , $include = null,$https = ''){
+//        //$forwardParams = $_GET;
+//        $forwardParams = array();
+//        if($exclude != null){
+//            if(is_string($exclude)){
+//                $exclude = explode(',',$exclude);
+//            }
+//            $exclude =(array)$exclude;
+//            foreach($exclude as $key){
+//                unset($forwardParams[$key]);
+//            }
+//        }
+//
+//        if( $include != null || $include != ''){
+//            $insertArr = array();
+//            if(is_string($include)){
+//                parse_str($include , $insertArr);
+//            }else{
+//                $insertArr = (array)$include;
+//            }
+//            $forwardParams = array_merge($forwardParams , $insertArr);
+//        }
+//        if($absoluteUrl == true){
+//            return $this->createAbsoluteUrl($route,$forwardParams,$https);
+//        }else{
+//            return $this->createUrl($route,$forwardParams,$https);
+//        }
+//    }
 
     /**
      * Create full url (with host name) with a GET params forward
@@ -627,13 +608,13 @@ class BaseController  extends CController{
      * @param string $https schema to use (e.g. http, https). If empty, the schema used for the current request will be used.
      * @author vincent.mi@toursforfun.com (2012-2-24)
      */
-    public function createAbsoluteUrlWithForward($route,$exclude = null , $include = null ,$https = ''){
-        if($_SERVER['HTTP_HOST']=='www.tours4fun.com' || $_SERVER['HTTP_HOST']=='secure.tours4fun.com' || $_SERVER['HTTP_HOST'] == 'www.tours4fun.es') {
-            return $this->_createUrlWithForward($route,true,$exclude,$include,$https);
-        }else{
-            return $this->_createUrlWithForward($route,false,$exclude,$include,$https);
-        }
-    }
+//    public function createAbsoluteUrlWithForward($route,$exclude = null , $include = null ,$https = ''){
+//        if($_SERVER['HTTP_HOST']=='www.tours4fun.com' || $_SERVER['HTTP_HOST']=='secure.tours4fun.com' || $_SERVER['HTTP_HOST'] == 'www.tours4fun.es') {
+//            return $this->_createUrlWithForward($route,true,$exclude,$include,$https);
+//        }else{
+//            return $this->_createUrlWithForward($route,false,$exclude,$include,$https);
+//        }
+//    }
 
     /**
      * Create url with a GET params forword
@@ -643,18 +624,18 @@ class BaseController  extends CController{
      * @param string $https schema to use (e.g. http, https). If empty, the schema used for the current request will be used.
      * @author vincent.mi@toursforfun.com (2012-2-24)
      */
-    public function createUrlWithForward($route,$exclude = null , $include = null,$https=''){
-        return $this->_createUrlWithForward($route,false,$exclude,$include,$https);
-    }
+//    public function createUrlWithForward($route,$exclude = null , $include = null,$https=''){
+//        return $this->_createUrlWithForward($route,false,$exclude,$include,$https);
+//    }
 
     /**
      * set the main tab selected index
      * @author vincent
      * @param int $index
      */
-    public function setMainTabIndex($index){
-        $this->mainTabIndex = intval($index);
-    }
+//    public function setMainTabIndex($index){
+//        $this->mainTabIndex = intval($index);
+//    }
 
     /**
      * Show flash messages
@@ -662,17 +643,17 @@ class BaseController  extends CController{
      * @param string $buttons Buttons to show in flash message. Defualt ok. Add multiple buttons with | delimiter
      * @author Gihan S <gihanshp@gmail.com>
      */
-    public function actionDisplayFlashMessage($buttons = 'ok'){
-        $this->layout = '//layouts/blank_layout';
-        $showButtons = array();
-        if(trim($buttons)){
-            $buttons = explode('|', $buttons);
-            $showButtons = array_filter($buttons);
-        }
-        $this->render('//base/flash', array(
-            'showButtons'=>$showButtons
-        ));
-    }
+//    public function actionDisplayFlashMessage($buttons = 'ok'){
+//        $this->layout = '//layouts/blank_layout';
+//        $showButtons = array();
+//        if(trim($buttons)){
+//            $buttons = explode('|', $buttons);
+//            $showButtons = array_filter($buttons);
+//        }
+//        $this->render('//base/flash', array(
+//            'showButtons'=>$showButtons
+//        ));
+//    }
 
     /**
      * (non-PHPdoc) pass $data to layout page
@@ -700,35 +681,35 @@ class BaseController  extends CController{
      * @param unknown $data
      * @return string
      */
-    public function convertArrayToSChinese(&$data){
-        return is_array($data)?array_map(array($this,'convertArrayToSChinese'),$data):ChineseTrans::simp($data);
-    }
-
-    /**
-     * Convert to schinese or tchinese
-     * if you are using echo something please call this method first
-     * @param unknown $content
-     * @return mixed
-     */
-    public function convertChinese($content){
-        if(LANGUAGE_ID == 'tw'){
-            if(is_array($content)){
-                array_walk_recursive($content, 'array_convert_chinese');
-            }else{
-                $content = ChineseTrans::trad($content);
-            }
-        }
-        return $content;
-    }
-
-    /* when use unionpay pay,Because of the signature characters involved, so can't be converted by Panda */
-    public function processOutput($output, $trans = true){
-        $output = parent::processOutput($output);
-        if(LANGUAGE_ID == 'tw' && $trans === true){
-            $output = ChineseTrans::trad($output);
-        }
-        return $output;
-    }
+//    public function convertArrayToSChinese(&$data){
+//        return is_array($data)?array_map(array($this,'convertArrayToSChinese'),$data):ChineseTrans::simp($data);
+//    }
+//
+//    /**
+//     * Convert to schinese or tchinese
+//     * if you are using echo something please call this method first
+//     * @param unknown $content
+//     * @return mixed
+//     */
+//    public function convertChinese($content){
+//        if(LANGUAGE_ID == 'tw'){
+//            if(is_array($content)){
+//                array_walk_recursive($content, 'array_convert_chinese');
+//            }else{
+//                $content = ChineseTrans::trad($content);
+//            }
+//        }
+//        return $content;
+//    }
+//
+//    /* when use unionpay pay,Because of the signature characters involved, so can't be converted by Panda */
+//    public function processOutput($output, $trans = true){
+//        $output = parent::processOutput($output);
+//        if(LANGUAGE_ID == 'tw' && $trans === true){
+//            $output = ChineseTrans::trad($output);
+//        }
+//        return $output;
+//    }
 
     /**
      * Wrapper to Yii::app()->clientScript->registerScriptFile
@@ -746,112 +727,132 @@ class BaseController  extends CController{
      * @param array $scripts
      * @author Gihan S <gihanshp@gmail.com>
      */
-    public function registerClientFiles(array $scripts){
-        $cs = Yii::app()->clientScript;
-        foreach($scripts as $key=>$files){
-            foreach($files as $file){
-                $baseUrl = Yii::app()->baseUrl;
-
-                // check url is absolute or not
-                if(preg_match('@^https?://@', $file))
-                        $baseUrl = '';
-
-                // add / prefix if not there
-                $file = trim($file);
-                if($file[0] != '/')
-                    $file = '/'.$file;
-
-                switch($key){
-                    case 'js':
-                        $cs->registerScriptFile($baseUrl.$file);
-                        break;
-                    case 'css':
-                        $cs->registerCssFile($baseUrl.$file);
-                        break;
-                }
-            }
-        }
-    }
+//    public function registerClientFiles(array $scripts){
+//        $cs = Yii::app()->clientScript;
+//        foreach($scripts as $key=>$files){
+//            foreach($files as $file){
+//                $baseUrl = Yii::app()->baseUrl;
+//
+//                // check url is absolute or not
+//                if(preg_match('@^https?://@', $file))
+//                        $baseUrl = '';
+//
+//                // add / prefix if not there
+//                $file = trim($file);
+//                if($file[0] != '/')
+//                    $file = '/'.$file;
+//
+//                switch($key){
+//                    case 'js':
+//                        $cs->registerScriptFile($baseUrl.$file);
+//                        break;
+//                    case 'css':
+//                        $cs->registerCssFile($baseUrl.$file);
+//                        break;
+//                }
+//            }
+//        }
+//    }
+//
+//    /**
+//     * add a flash message ,flash message was saved in sesssion.
+//     * @param string $type MSG_SUCCESS
+//     * @param string $message
+//     */
+//    public function addFlash($message,$type = self::MSG_SUCCESS,$clear = false){
+//        if($clear == false){
+//            $old_msg = Yii::app()->user->getFlash($type,'');
+//            if($old_msg!=''){
+//                $message = $old_msg.'<br/>'.$message;
+//            }
+//        }
+//        Yii::app()->user->setFlash($type,$message);
+//    }
+//
+//    /**
+//     * Display error message 。
+//     * @param int $fadeOut 0,no fade .how many second to fade this message ,no effect to error message.
+//     * @param int $type null ,for all type,BaseController::MSG_ERROR or other type
+//     */
+//    public function displayMessage($fadeOut= 0 , $type = null){
+//        $html = '';$js = '';
+//        $id = uniqid('msg');
+//        $jsAnimate = '.animate({opacity: 1.0}, '.$fadeOut.'000).slideUp("fast");';
+//
+//        //display all flash
+//        $flashMessages = Yii::app()->user->getFlashes();
+//        if ($flashMessages) {
+//            foreach($flashMessages as $key => $message) {
+//                $html .= '<p class="msgbox msgbox-'.$key.'" id="'.$id.'_flash_'.$key.'"><span>'.$message.'</span></p>';
+//                //$html .= '<div class="'.$key.'box" id="'.$id.'_flash_'.$key.'"><h2>'.ucwords($key).'</h2><p>'.$message.'</p></div>';
+//                $js.= 'jQuery("#'.$id.'_flash_'.$key.'")'.$jsAnimate;
+//            }
+//        }
+//        /*
+//        if(($type == null || $type == self::MSG_ERROR) && !empty($this->messages[self::MSG_SUCCESS])){
+//            $html .= '<div class="successbox" id="'.$id.'_success"><h2>Successful</h2><p>';
+//            foreach($this->messages[self::MSG_SUCCESS] as $msg){
+//                $html .= $msg['message'].'<br />' ;
+//            }
+//            $html.="</div>";
+//            $js.= 'jQuery("#'.$id.'_success")'.$jsAnimate;
+//        }
+//
+//        if(($type == null || $type == self::MSG_NOTICE) && !empty($this->messages[self::MSG_NOTICE])){
+//            $html .= '<div class="noticebox" id="'.$id.'_notice"><h2>Notice</h2><p>';
+//            foreach($this->messages[self::MSG_NOTICE] as $msg){
+//                $html .= $msg['message'].'<br />' ;
+//            }
+//            $html.="</div>";
+//            $js.= 'jQuery("#'.$id.'_notice")'.$jsAnimate;
+//        }
+//
+//        if(($type == null || $type == self::MSG_ERROR) && !empty($this->messages[self::MSG_ERROR])){
+//            $html .= '<div class="errorbox" id="'.$id.'_error"><h2>Error</h2><p>';
+//            foreach($this->messages[self::MSG_ERROR] as $msg){
+//                $html .= $msg['message'].'<br />' ;
+//            }
+//            $html.="</div>";
+//            //$js.= 'jQuery("#'.$id.'_error")'.$jsAnimate; //dont remove error msg
+//        } */
+//        if($html!= ''){
+//            echo $html;
+//            if($fadeOut > 0 && $js != ''){
+//                echo '<script type="text/javascript">'.$js.'</script>';
+//            }
+//        }
+//    }
 
     /**
-     * add a flash message ,flash message was saved in sesssion.
-     * @param string $type MSG_SUCCESS
+     * add a error message
+     * @param string $key
      * @param string $message
      */
-    public function addFlash($message,$type = self::MSG_SUCCESS,$clear = false){
-        if($clear == false){
-            $old_msg = Yii::app()->user->getFlash($type,'');
-            if($old_msg!=''){
-                $message = $old_msg.'<br/>'.$message;
-            }
-        }
-        Yii::app()->user->setFlash($type,$message);
-    }
+//    public function addError($key, $message){
+//        if(isset($this->error[$key])){
+//            $this->error[$key].=','.$message;
+//        }else{
+//            $this->error[$key]=$message;
+//        }
+//    }
+//
+//    /**
+//     * get errir message
+//     */
+//    public function getError(){
+//        return $this->error;
+//    }
 
-    /**
-     * Display error message 。
-     * @param int $fadeOut 0,no fade .how many second to fade this message ,no effect to error message.
-     * @param int $type null ,for all type,BaseController::MSG_ERROR or other type
-     */
-    public function displayMessage($fadeOut= 0 , $type = null){
-        $html = '';$js = '';
-        $id = uniqid('msg');
-        $jsAnimate = '.animate({opacity: 1.0}, '.$fadeOut.'000).slideUp("fast");';
-
-        //display all flash
-        $flashMessages = Yii::app()->user->getFlashes();
-        if ($flashMessages) {
-            foreach($flashMessages as $key => $message) {
-                $html .= '<p class="msgbox msgbox-'.$key.'" id="'.$id.'_flash_'.$key.'"><span>'.$message.'</span></p>';
-                //$html .= '<div class="'.$key.'box" id="'.$id.'_flash_'.$key.'"><h2>'.ucwords($key).'</h2><p>'.$message.'</p></div>';
-                $js.= 'jQuery("#'.$id.'_flash_'.$key.'")'.$jsAnimate;
-            }
-        }
-        /*
-        if(($type == null || $type == self::MSG_ERROR) && !empty($this->messages[self::MSG_SUCCESS])){
-            $html .= '<div class="successbox" id="'.$id.'_success"><h2>Successful</h2><p>';
-            foreach($this->messages[self::MSG_SUCCESS] as $msg){
-                $html .= $msg['message'].'<br />' ;
-            }
-            $html.="</div>";
-            $js.= 'jQuery("#'.$id.'_success")'.$jsAnimate;
-        }
-
-        if(($type == null || $type == self::MSG_NOTICE) && !empty($this->messages[self::MSG_NOTICE])){
-            $html .= '<div class="noticebox" id="'.$id.'_notice"><h2>Notice</h2><p>';
-            foreach($this->messages[self::MSG_NOTICE] as $msg){
-                $html .= $msg['message'].'<br />' ;
-            }
-            $html.="</div>";
-            $js.= 'jQuery("#'.$id.'_notice")'.$jsAnimate;
-        }
-
-        if(($type == null || $type == self::MSG_ERROR) && !empty($this->messages[self::MSG_ERROR])){
-            $html .= '<div class="errorbox" id="'.$id.'_error"><h2>Error</h2><p>';
-            foreach($this->messages[self::MSG_ERROR] as $msg){
-                $html .= $msg['message'].'<br />' ;
-            }
-            $html.="</div>";
-            //$js.= 'jQuery("#'.$id.'_error")'.$jsAnimate; //dont remove error msg
-        } */
-        if($html!= ''){
-            echo $html;
-            if($fadeOut > 0 && $js != ''){
-                echo '<script type="text/javascript">'.$js.'</script>';
-            }
-        }
-    }
-
-    public function send($to, $subject, $content, $from = '', $reply='', $attachements = array()) {
-        return Yii::app()->mailer->send(
-            $this->convertChinese($to),
-            $this->convertChinese($subject),
-            $this->convertChinese($content),
-            $this->convertChinese($from),
-            $this->convertChinese($reply),
-            $attachements
-        );
-    }
+//    public function send($to, $subject, $content, $from = '', $reply='', $attachements = array()) {
+//        return Yii::app()->mailer->send(
+//            $this->convertChinese($to),
+//            $this->convertChinese($subject),
+//            $this->convertChinese($content),
+//            $this->convertChinese($from),
+//            $this->convertChinese($reply),
+//            $attachements
+//        );
+//    }
 
     /**
      * delete Fragment Cache
@@ -859,11 +860,11 @@ class BaseController  extends CController{
      * @param string $id COutputCache widget id which is used in view like : $this->beginCache($id, array('varyByRoute'=>false))
      * @return bool
       */
-    public function deleteCache($id) {
-        if(Yii::app()->hasComponent('cache')) {
-            return Yii::app()->cache->delete('Yii.COutputCache.' . $id . '......');
-        }
-    }
+//    public function deleteCache($id) {
+//        if(Yii::app()->hasComponent('cache')) {
+//            return Yii::app()->cache->delete('Yii.COutputCache.' . $id . '......');
+//        }
+//    }
 
     /**
      * @todo make a stat for site click
@@ -872,52 +873,101 @@ class BaseController  extends CController{
      * @return void
      * @author eric.tao@toursforfun.com
      */
-    private function makeSiteClickStat(){
-        // check whether the current url is marked as a statistic url or not
-        if(!(isset($_GET[$this->paramSource]) || isset($_GET[$this->paramTerm]))){
-            return false;
-        }
-
-        // get parameters
-        $source = Yii::app()->request->getParam($this->paramSource, NULL);
-        $term = Yii::app()->request->getParam($this->paramTerm, NULL);
-        if(!$source || !$term || !preg_match('/^[0-9A-Za-z_-]+$/', $source) || !preg_match('/^[0-9A-Za-z_-]+$/', $term)){
-            // invalid request
-            return;
-        }
-
-        // save click counts information
-        SiteClick::saveCounts($source, $term);
-        // save click source information on client
-        SiteClickBusiness::updateClientCookie($source, $term);
-    }
+//    private function makeSiteClickStat(){
+//        // check whether the current url is marked as a statistic url or not
+//        if(!(isset($_GET[$this->paramSource]) || isset($_GET[$this->paramTerm]))){
+//            return false;
+//        }
+//
+//        // get parameters
+//        $source = Yii::app()->request->getParam($this->paramSource, NULL);
+//        $term = Yii::app()->request->getParam($this->paramTerm, NULL);
+//        if(!$source || !$term || !preg_match('/^[0-9A-Za-z_-]+$/', $source) || !preg_match('/^[0-9A-Za-z_-]+$/', $term)){
+//            // invalid request
+//            return;
+//        }
+//
+//        // save click counts information
+//        SiteClick::saveCounts($source, $term);
+//        // save click source information on client
+//        SiteClickBusiness::updateClientCookie($source, $term);
+//    }
 
     /**
      * redirect after login
      */
-    public function afterLogin()
-    {
+//    public function afterLogin()
+//    {
+        /*
+        $now = Yii::app()->db->createCommand("SELECT NOW() cur_time")->queryScalar();
+        $today = date('Y-m-d 00:00:00', strtotime($now));
+        $expHis = Yii::app()->db->createCommand()
+            ->select('customer_id')
+            ->from(CustomerExperienceHistory::model()->tableName())
+            ->where('customer_id = :customer_id AND type = :type AND created > :today')
+            ->bindValues(
+                array(
+                    'customer_id' => Yii::app()->user->id,
+                    'today' => $today,
+                    'type' => CustomerExperienceHistory::EXP_PLUS_LOGIN
+                )
+            )
+            ->queryScalar();
+        if (!$expHis) {
+            Customer::addExperience(Yii::app()->user->id, CustomerExperienceHistory::EXP_PLUS_LOGIN, $now);
+        }
+        $cookies = Yii::app()->request->getCookies();
+        $after_login = unserialize($cookies['after_login']->value);
 
-	}
+        // pop banner start
+        $pop_banner = CJSON::decode(POP_BANNER_SETTINGS);
+        $now = time();
+        if ($pop_banner[LANGUAGE_ID]['active'] && ($now > $pop_banner[LANGUAGE_ID]['start_date']) && ($now < $pop_banner[LANGUAGE_ID]['end_date'])) {
+            if (empty(Yii::app()->request->cookies['pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id']]->value)) {
+                $CHttpCookie                                    = new CHttpCookie('pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id'], 'on');
+                $CHttpCookie->expire                            = time() + $pop_banner[LANGUAGE_ID]['cookie_expire'];
+                $CHttpCookie->path                              = $this->cookie_path;
+                $CHttpCookie->domain                            = $this->cookie_domain;
+                Yii::app()->request->cookies['pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id']] = $CHttpCookie;
+            }
+        } else {
+            if (!empty(Yii::app()->request->cookies['pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id']]->value)) {
+                Yii::app()->request->cookies->remove('pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id']);
+                setcookie('pop_banner_'.LANGUAGE_ID.$pop_banner[LANGUAGE_ID]['id'], null, 0, $this->cookie_path, $this->cookie_domain);
+            }
+        }
+        // pop banner end
+
+		if($after_login && count($after_login) > 0) {
+			$this->redirect(array_pop($after_login));
+		} else {
+			$this->redirect($this->createUrl('MyAccount/index'),true);
+		}*/
+//	}
 
     /**
-     * For cancelling the `forceMaster` option.
-     *
-     * @inheritdoc
+     * 执行action前的动作，这里主要过滤需要登陆的情况
+     * @param CAction $action
+     * @return bool|void
+     * @author vera.zhang 2015-02-25
      */
-    protected function afterAction($action)
+    protected function beforeAction($action)
     {
-        parent::afterAction($action);
-
-        //Yii::app()->db->forceMaster = false;
+        $controller_id = $this->getId();
+        $action_id = $this->getAction()->getId();
+        $login_arr = array('incount', 'outcount');
+        if (!$this->isLogin && in_array($controller_id, $login_arr)) {
+            $this->redirect($this->createUrl('site/login'));
+        }
+        return true;
     }
 
-    public function filters()
-    {
-        return array(
-            array(
-                'webeez.classes.WebeezRequestFilter',
-            )
-        );
-    }
+//    public function filters()
+//    {
+//        return array(
+//            array(
+//                'webeez.classes.WebeezRequestFilter',
+//            )
+//        );
+//    }
 }

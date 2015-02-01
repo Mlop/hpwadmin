@@ -7,10 +7,14 @@
  */
 class IncountForm extends CFormModel
 {
-	public $name;
-	public $password;
-
-	private $_identity;
+	public $money;
+	public $phone;
+    public $note;
+    public $customerName;
+    public $customer_id;
+    public $incount_id;
+    public $add_time;
+    public $user_id;
 
 	/**
 	 * Declares the validation rules.
@@ -21,9 +25,9 @@ class IncountForm extends CFormModel
 	{
 		return array(
 			// username and password are required
-			array('name, password', 'required'),
+			array('money, phone', 'required'),
 			// password needs to be authenticated
-			array('password', 'authenticate'),
+			array('note, customerName, customer_id, incount_id, add_time, user_id', 'safe'),
 		);
 	}
 
@@ -33,43 +37,9 @@ class IncountForm extends CFormModel
 	public function attributeLabels()
 	{
 		return array(
-			'rememberMe'=>'Remember me next time',
+			'money'=>'Money',
+            'phone'=>'Phone',
+            'note'=>'Note',
 		);
-	}
-
-	/**
-	 * Authenticates the password.
-	 * This is the 'authenticate' validator as declared in rules().
-	 */
-	public function authenticate($attribute,$params)
-	{
-		if(!$this->hasErrors())
-		{
-			$this->_identity=new UserIdentity($this->name, $this->password);
-			if($this->_identity->authenticate())
-				$this->addError('password','Incorrect username or password.');
-		}
-	}
-
-	/**
-	 * Logs in the user using the given username and password in the model.
-	 * @return boolean whether login is successful
-	 */
-	public function login()
-	{
-		if($this->_identity===null)
-		{
-			$this->_identity=new UserIdentity($this->name, $this->password);
-			$this->_identity->authenticate();
-		}
-		if($this->_identity->errorCode===UserIdentity::ERROR_NONE)
-		{
-//			$duration=$this->rememberMe ? 3600*24*30 : 0; // 30 days
-//			Yii::app()->user->login($this->_identity,$duration);
-            Yii::app()->user->login($this->_identity);
-			return true;
-		}
-		else
-			return false;
 	}
 }

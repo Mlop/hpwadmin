@@ -1,32 +1,42 @@
 <?php
-$this ->breadcrumbs->add('进账', $this->createUrl('incount/create'));
-$this ->breadcrumbs->display();
+/* @var $this IncountController */
+$this->breadcrumbs->display();
+//$this->breadcrumbs=array(
+//    'Incount','create',
+//);
 ?>
 <div class="form">
-    <?php $form=$this->beginWidget('CActiveForm', array(
+<?php $form=$this->beginWidget('CActiveForm', array(
         'id'=>'incount-form',
         'enableClientValidation'=>true,
         'clientOptions'=>array(
             'validateOnSubmit'=>true,
         ),
     )); ?>
-    <table>
-        <tr>
-            <td>借款人：</td>
-            <td><input name="username" /></td>
-        </tr>
-        <tr>
-            <td>金额：</td>
-            <td><input name="money" /></td>
-        </tr>
-        <tr>
-            <td>备注：</td>
-            <td><textarea name="note"></textarea></td>
-        </tr>
-        <tr>
-            <td><input type="submit" value="添加" /></td>
-            <td><input type="reset" value="取消" /></td>
-        </tr>
-    </table>
+<table>
+    <tr>
+        <td><?php echo $form->labelEx($model, 'customerName'); ?></td>
+        <td><?php echo $form->textField($model, 'customerName'); ?></td>
+        <td><?php echo $form->error($model, 'customerName');?><?php echo $form->textField($model, 'customer_id'); ?></td>
+    </tr>
+    <tr>
+        <td><?php echo $form->labelEx($model, 'money'); ?></td>
+        <td><?php echo $form->telField($model, 'money'); ?></td>
+        <td><?php echo $form->error($model, 'money');?></td>
+    </tr>
+    <tr>
+        <td><?php echo $form->labelEx($model, 'phone'); ?></td>
+        <td><?php echo $form->telField($model, 'phone'); ?></td>
+        <td><?php echo $form->error($model, 'phone');?></td>
+    </tr>
+    <tr>
+        <td><?php echo $form->labelEx($model, 'note'); ?></td>
+        <td><?php echo $form->textArea($model, 'note'); ?></td>
+    </tr>
+    <tr>
+        <td><?php echo CHtml::submitButton(t('operation', 'SUBMIT')); ?></td>
+        <td><?php echo CHtml::resetButton(t('operation', 'CANCEL')); ?></td>
+    </tr>
+</table>
 <?php $this->endWidget(); ?>
 </div><!-- form -->
