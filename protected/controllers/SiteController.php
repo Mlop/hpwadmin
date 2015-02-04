@@ -32,10 +32,6 @@ class SiteController extends Controller
 		$this->render('index');
 	}
 
-    public function actionShow()
-    {
-        echo 'show';
-    }
 	/**
 	 * This is the action to handle external exceptions.
 	 */
@@ -110,4 +106,63 @@ class SiteController extends Controller
 		Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
 	}
+
+    /**
+     * 注册用户
+     */
+    public function actionRegister()
+    {
+//        $p = User::encrypt('11');
+//        $str = "5";
+//        var_dump(substr($str, -2));exit;
+//        var_dump(Yii::app()->request->getParam('User'),$_POST['User'],$_POST);exit;
+//        if(isset($_POST['User']))
+//        {
+//            $model->attributes=$_POST['User'];
+//            if($model->validate())
+//            {
+//                // form inputs are valid, do something here
+//                return;
+//            }
+//        }
+        $model=new User;
+        $userPost = Yii::app()->request->getParam('User');
+        if (isset($userPost)) {
+            if ($userPost['name'] != "" && $userPost['password'] != "") {
+                $this->addError('password','Incorrect password11111.');
+                if($model->validate()) {
+//                    $userPost['password'] = User::encrypt($userPost['password']);
+//                    $model->attributes=$userPost;
+//                    var_dump($model->attributes);
+//                    $model->isNewRecord = true;
+//                    $model->save();
+                }
+//                    $this->redirect(Yii::app()->user->returnUrl);
+            } else {
+//                $this->redirect($this->createUrl('site/register'));
+            }
+        }
+
+        // if it is ajax validation request
+//        if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
+//        {
+//            echo CActiveForm::validate($model);
+//            Yii::app()->end();
+//        }
+
+        // collect user input data
+//        if(isset($_POST['LoginForm']))
+//        {
+//            $model->attributes=$_POST['LoginForm'];
+//            // validate user input and redirect to the previous page if valid
+//            if($model->validate() && $model->login())
+//                $this->redirect(Yii::app()->user->returnUrl);
+//        }
+
+        $this->render('register',array('model'=>$model));
+//        var_dump(Yii::app()->user->isGuest,$userPost);exit;
+//        if(isset($_POST['user'])){
+//
+//        }
+    }
 }

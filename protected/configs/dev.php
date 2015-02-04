@@ -62,8 +62,8 @@ return array(
             'caseSensitive' => true,
             'showScriptName' => false,
             'rules' => include('route.php'),
-            'secureHost' => 'http://www.tff-vera.com',
-            'commonHost' => 'http://www.tff-vera.com',
+            'secureHost' => 'http://www.hpw-vera.com',
+            'commonHost' => 'http://www.hpw-vera.com',
             'cdn' => array(
                 // provider => domain
                 //'default' => 'xxx.rackcdn.com', // Note: just domain here, no schema
@@ -126,5 +126,6 @@ return array(
 	'params'=>array(
 		// this is used in contact page
 		'adminEmail'=>'webmaster@example.com',
+        'language' => 'zh_cn',
 	),
 );

@@ -4573,3 +4573,33 @@ function getMetaParamsAsQueryString()
     }
     return $queryString;
 }
+/**
+ * Returns a localized message according to user preferred language.
+ * @param string message category
+ * @param string message to be translated
+ * @param array parameters to be applied to the translated message
+ * @return string translated message
+ */
+function t($filename, $message, $params=array())
+{
+    static $messages;
+
+    if($messages === null)
+    {
+        $messages=array();
+        $lang = Yii::app()->params['language'];
+        if($lang !== false)
+        {
+            $file=dirname(__FILE__)."/../messages/$lang/$filename.php";
+            if(is_file($file))
+                $messages=include($file);
+        }
+    }
+
+    if(empty($message))
+        return $message;
+    if(isset($messages[$message]) && $messages[$message] !== '')
+        $message=$messages[$message];
+
+    return $params !== array() ? strtr($message,$params) : $message;
+}
