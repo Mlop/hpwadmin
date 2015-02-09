@@ -105,7 +105,7 @@ class BaseController  extends CController{
     /**
      * @var array errors should show on views
      */
-    private $_error = array();
+    private $_errors = array();
 
     public function __construct($id,$module = null){
         //2013-12-20, eric, check whether the request comes from a affiliate site(user use a sub-domain)
@@ -235,9 +235,13 @@ class BaseController  extends CController{
      * @param string $attribute attribute name.
      * @return string the error message. Null is returned if no error.
      */
-    public function getError($attribute)
+    public function getError($attribute = null)
     {
-        return isset($this->_errors[$attribute]) ? reset($this->_errors[$attribute]) : null;
+        if (is_null($attribute)) {
+            return $this->_errors;
+        } else {
+            return isset($this->_errors[$attribute]) ? reset($this->_errors[$attribute]) : null;
+        }
     }
     /**
      * Removes errors for all attributes or a single attribute.
@@ -258,6 +262,24 @@ class BaseController  extends CController{
     public function addError($attribute,$error)
     {
         $this->_errors[$attribute][]=$error;
+    }
+
+    /**
+     * display error
+     * @param $attribute attribute name
+     */
+    public function displayError($attribute)
+    {
+        $eArr = isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
+
+        if (!empty($eArr)) {
+            $errStr = '<span style="color:red;">';
+            foreach ($eArr as $e) {
+                $errStr .= $e.'<br />';
+            }
+            $errStr .= '</span>';
+            echo $errStr;
+        }
     }
     /**
      * 重写DB
@@ -825,20 +847,20 @@ class BaseController  extends CController{
      * @param string $key
      * @param string $message
      */
-    public function addError($key, $message){
-        if(isset($this->error[$key])){
-            $this->error[$key].=','.$message;
-        }else{
-            $this->error[$key]=$message;
-        }
-    }
-
-    /**
-     * get errir message
-     */
-    public function getError(){
-        return $this->error;
-    }
+//    public function addError($key, $message){
+//        if(isset($this->error[$key])){
+//            $this->error[$key].=','.$message;
+//        }else{
+//            $this->error[$key]=$message;
+//        }
+//    }
+//
+//    /**
+//     * get errir message
+//     */
+//    public function getError(){
+//        return $this->error;
+//    }
 
     public function send($to, $subject, $content, $from = '', $reply='', $attachements = array()) {
         return Yii::app()->mailer->send(

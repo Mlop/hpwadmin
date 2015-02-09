@@ -78,7 +78,7 @@ class SiteController extends Controller
 	public function actionLogin()
 	{
 		$model=new LoginForm;
-
+/*
 		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
 		{
@@ -89,11 +89,12 @@ class SiteController extends Controller
 		// collect user input data
 		if(isset($_POST['LoginForm']))
 		{
+            //var_dump($_POST['LoginForm']);
 			$model->attributes=$_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login())
 				$this->redirect(Yii::app()->user->returnUrl);
-		}
+		}*/
 		// display the login form
 		$this->render('login',array('model'=>$model));
 	}
@@ -112,57 +113,34 @@ class SiteController extends Controller
      */
     public function actionRegister()
     {
-//        $p = User::encrypt('11');
-//        $str = "5";
-//        var_dump(substr($str, -2));exit;
-//        var_dump(Yii::app()->request->getParam('User'),$_POST['User'],$_POST);exit;
-//        if(isset($_POST['User']))
-//        {
-//            $model->attributes=$_POST['User'];
-//            if($model->validate())
-//            {
-//                // form inputs are valid, do something here
-//                return;
-//            }
-//        }
-        $model=new User;
-        $userPost = Yii::app()->request->getParam('User');
+        $model=new UserForm;//var_dump($model);exit;
+        $userPost = Yii::app()->request->getParam('UserForm');
+//        var_dump($userPost,$model);exit;
         if (isset($userPost)) {
-            if ($userPost['name'] != "" && $userPost['password'] != "") {
-                $this->addError('password','Incorrect password11111.');
-                if($model->validate()) {
-//                    $userPost['password'] = User::encrypt($userPost['password']);
-//                    $model->attributes=$userPost;
-//                    var_dump($model->attributes);
-//                    $model->isNewRecord = true;
-//                    $model->save();
-                }
-//                    $this->redirect(Yii::app()->user->returnUrl);
-            } else {
-//                $this->redirect($this->createUrl('site/register'));
+
+            if ($model->authenticate()) {
+                echo 'right';exit;
             }
+//            $model->addError('name','请输入用户名，不允许为空格！');
+            /*$username = trim($userPost['name']);
+            $password = $userPost['password'];
+            if ($username == "") {
+                $this->addError('name','请输入用户名，不允许为空格！');
+//                $model->name = $username;
+            } else if ($password == "") {
+//                $model->password = $password;
+                $this->addError('password','请输入密码！');
+            }else if ($username != "" && $password != "") {
+                $userPost['name'] = $username;
+                $userPost['password'] = User::encrypt($password);
+                $model->attributes=$userPost;
+                var_dump($model->attributes);
+                $model->isNewRecord = true;
+                $model->save();
+                //@todo 注册后进入默认页面
+                $this->redirect(Yii::app()->user->returnUrl);
+            }*/
         }
-
-        // if it is ajax validation request
-//        if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-//        {
-//            echo CActiveForm::validate($model);
-//            Yii::app()->end();
-//        }
-
-        // collect user input data
-//        if(isset($_POST['LoginForm']))
-//        {
-//            $model->attributes=$_POST['LoginForm'];
-//            // validate user input and redirect to the previous page if valid
-//            if($model->validate() && $model->login())
-//                $this->redirect(Yii::app()->user->returnUrl);
-//        }
-
         $this->render('register',array('model'=>$model));
-//        var_dump(Yii::app()->user->isGuest,$userPost);exit;
-//        if(isset($_POST['user'])){
-//
-//        }
     }
 }
