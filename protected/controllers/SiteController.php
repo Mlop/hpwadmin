@@ -78,7 +78,7 @@ class SiteController extends Controller
 	public function actionLogin()
 	{
 		$model=new LoginForm;
-/*
+
 		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
 		{
@@ -94,7 +94,7 @@ class SiteController extends Controller
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login())
 				$this->redirect(Yii::app()->user->returnUrl);
-		}*/
+		}
 		// display the login form
 		$this->render('login',array('model'=>$model));
 	}
@@ -113,13 +113,18 @@ class SiteController extends Controller
      */
     public function actionRegister()
     {
-        $model=new UserForm;//var_dump($model);exit;
-        $userPost = Yii::app()->request->getParam('UserForm');
+        $model=new RegisterForm;
+        $userPost = Yii::app()->request->getParam('RegisterForm');
 //        var_dump($userPost,$model);exit;
         if (isset($userPost)) {
+            $model->setAttributes($userPost);
+            if ($model->validate() && $model->register($userPost)) {
+                //@todo 注册后进入默认页面
+                $this->redirect(Yii::app()->user->returnUrl);
 
-            if ($model->authenticate()) {
-                echo 'right';exit;
+//                $this->redirect($this->createUrl('site/login'));
+            } else {
+                $model->addError('name','注册失败！');
             }
 //            $model->addError('name','请输入用户名，不允许为空格！');
             /*$username = trim($userPost['name']);

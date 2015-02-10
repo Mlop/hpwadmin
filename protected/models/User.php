@@ -14,7 +14,7 @@
  * @property Incount[] $incounts
  * @property Outcount[] $outcounts
  */
-class User extends CFormModel//CActiveRecord
+class User extends CActiveRecord
 {
     public $name;
     public $password;

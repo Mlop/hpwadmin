@@ -77,7 +77,7 @@ return array(
 //        'numberFormatter' => array('class' => 'webeez.classes.WebeezNumberFormatter'),
         'user' => array(
             'class' => 'webeez.classes.WebeezCustomer',
-            'returnUrl' => array('MyAccount/index'),
+            'returnUrl' => array('site/page?view=about'),
             'loginUrl' => array('Account/login'),
             'allowAutoLogin' => true
         ),

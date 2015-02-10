@@ -5,7 +5,7 @@
  * LoginForm is the data structure for keeping
  * user login form data. It is used by the 'login' action of 'SiteController'.
  */
-class UserForm extends CFormModel
+class RegisterForm extends CFormModel
 {
 	public $name;
 	public $password;
@@ -23,8 +23,6 @@ class UserForm extends CFormModel
 		return array(
 			// username and password are required
 			array('name, password', 'required'),
-			// rememberMe needs to be a boolean
-//			array('rememberMe', 'boolean'),
 			// password needs to be authenticated
 			array('password', 'authenticate'),
 		);
@@ -44,24 +42,40 @@ class UserForm extends CFormModel
 	 * Authenticates the password.
 	 * This is the 'authenticate' validator as declared in rules().
 	 */
-	public function authenticate()
+	public function authenticate($attribute,$params)
 	{
         $len = strlen($this->password);
-        if ($len < 4) {
-            $this->addError('password','the length must greater than 4 char.');
-        }
-        if (preg_match('/^[a-z0-9]+$/',$this->password) == 1){
-            $this->addError('password','too simple.');
-        }
 
-//		if(!$this->hasErrors())
-//		{
-//			$this->_identity=new UserIdentity($this->username,$this->password);
-//			if(!$this->_identity->authenticate())
-//				$this->addError('password','Incorrect username or password.');
-//		}
+        if ($len < 4) {
+            $this->addError('password','the length must greater than four characters.');
+        }
+//        if (preg_match('/^[a-z0-9]+$/',$this->password) == 1){
+//            $this->addError('password','too simple.');
+//        }
+        $userCount = User::model()->countByAttributes(array('name'=>$this->name));
+        if ($userCount > 0) {
+            $this->addError('name','the name '.$this->name.' had exist yet.');
+        }
 	}
 
+    public function register($attributes)
+    {
+        try {
+            $attributes['password'] = User::encrypt($attributes['password']);
+            $this->password = $attributes['password'];
+            $user = User::model();
+            $user->setAttributes($attributes);
+            $user->setIsNewRecord(true);
+            $user->save();
+
+            $userIdentity = new UserIdentity($this->name, $this->password);
+            Yii::app()->user->login($userIdentity);
+        } catch (Exception $ex) {
+            $this->addError('name',$ex->getMessage());
+            return false;
+        }
+        return true;
+    }
 	/**
 	 * Logs in the user using the given username and password in the model.
 	 * @return boolean whether login is successful
