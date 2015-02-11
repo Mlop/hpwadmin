@@ -1,0 +1,149 @@
+@CHARSET "UTF-8";
+body,div,img,table,tr,tbody,tfoot,td,ul,li,p,h1,h2,h3,h4,h5,dl,dt,dd,fieldset{margin:0;padding:0;border:0}
+input[type="checkbox"]{margin:0;padding:0}
+input[type="button"]{cursor:pointer;}
+input:focus, a{outline:none}
+table{border-collapse:collapse;border-spacing:0}
+h1,h2,h3,h4,h5{font-weight:normal}
+th{font-weight:normal}
+h1,h2,h3,h4,h5{font-size:100%}
+i,em{font-style:normal}
+li{list-style-type:none}
+/*html{overflow-y:auto\9;overflow-y:scroll;-webkit-tap-highlight-color:transparent}*/
+/*body{font:12px/1.5 "Helvetica Neue","Luxi Sans","DejaVu Sans",Tahoma,"Hiragino Sans GB", STHeiti, "Microsoft Yahei", \5b8b\4f53 !important;_overflow-x:hidden}*/
+/**顶部导航条滚动时，超过一定高度就自动浮到顶上	开始**/
+.nav_default {
+	height: 74px;
+	/*box-shadow: 0 5px 20px #888;
+	-webkit-box-shadow: 0 5px 20px #888;
+	-moz-box-shadow: 0 5px 20px #888;*/
+}
+
+.nav_fixed {
+	position: fixed;
+	top: -5px;
+	left: 0;
+	width: 100%;
+	
+	/*box-shadow: 0 0 40px #222;
+	-webkit-box-shadow: 0 0 40px #222;
+	-moz-box-shadow: 0 0 40px #222;*/
+}
+/**顶部导航条滚动时，超过一定高度就自动浮到顶上	结束**/
+
+/**必填项的提示红色***/
+.tooltipRequest{
+	color:rgba(255,0,0,1);
+}
+
+/*不能填写的时候的鼠标样式*/
+input[disabled],
+select[disabled],
+textarea[disabled] {
+  /*cursor: not-allowed;*/
+  background-color: #eeeeee;
+}
+/*不能填写的时候的鼠标样式*/
+input[type="radio"][disabled],
+input[type="checkbox"][disabled],
+input[type="radio"][readonly],
+input[type="checkbox"][readonly] {
+  background-color: transparent;
+}
+/* 文本输入框提示信息通用 */
+::-webkit-input-placeholder { color:#e0e0e0;font-style: italic; }
+::-moz-placeholder { color:#e0e0e0;font-style: italic; } /* firefox 19+ */
+:-ms-input-placeholder { color:#e0e0e0;font-style: italic; } /* ie */
+input:-moz-placeholder { color:#e0e0e0;font-style: italic; }
+
+
+/*******************************************************滚动条样式	开始(2013.04.27 10:00 kong.qf摘自网络)*******************************************************/
+
+/* Turn on a 5x5 scrollbar
+::-webkit-scrollbar {
+    width:5px;
+    height:5px;
+}
+
+::-webkit-scrollbar-button:vertical,::-webkit-scrollbar-button:horizontal {
+    height:0px;
+    width:0px;
+} */
+
+/* Turn on single button up on top, and down on bottom 
+::-webkit-scrollbar-button:start:decrement,
+::-webkit-scrollbar-button:end:increment {
+    display: block;
+}*/
+
+/* Turn off the down area up on top, and up area on bottom 
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement {
+    display: none;
+}*/
+
+/* 滚动条向下按钮样式 
+::-webkit-scrollbar-button:vertical:increment,*/
+/* 滚动条向上按钮样式 
+::-webkit-scrollbar-button:vertical:decrement,*/
+/* 滚动条向左按钮样式
+::-webkit-scrollbar-button:horizontal:increment,*/
+/* 滚动条向右按钮样式 
+::-webkit-scrollbar-button:horizontal:decrement {
+    background-color:rgba(54,52,47,1);
+    height:0px;
+}*/
+/* 滚动条向下按钮样式
+::-webkit-scrollbar-button:vertical:increment{
+	background-image:url('images/scroll_cntrl_dwn.png');*/
+	/*background-position:center center;
+	background-repeat:no-repeat;
+	cursor:pointer;
+} */
+/* 滚动条向上按钮样式
+::-webkit-scrollbar-button:vertical:decrement {
+    background-image:url('images/scroll_cntrl_up.png');*/
+    /*background-position:center center;
+	background-repeat:no-repeat;
+	cursor:pointer;
+} 
+
+::-webkit-scrollbar-track {
+    background-color: blue;
+    border: 1px solid yellow;
+}
+*/
+/* 滚动条滚动过的部分样式 */
+::-webkit-scrollbar-track-piece:vertical:start {
+	
+}
+
+/* 滚动条未滚下来的部分样式 */
+::-webkit-scrollbar-track-piece:vertical:end {
+
+}
+
+/* Track below and above 
+::-webkit-scrollbar-track-piece {
+    background-color:rgba(54,52,47,1);
+}
+*/
+/* 滚动块样式 
+::-webkit-scrollbar-thumb:vertical,::-webkit-scrollbar-thumb:horizontal {
+    height: 5px;
+    background-color: rgba(140,136,119,1);
+    border-radius:4px;
+    width:5px;
+}*/
+
+/* Corner
+::-webkit-scrollbar-corner {
+    background-color:rgba(54,52,47,1);
+} */
+
+/* Resizer 
+::-webkit-scrollbar-resizer {
+    background-color: blue;
+     border:1px solid red;
+}*/
+/*******************************************************滚动条样式	结束(2013.04.27 10:00 kong.qf摘自网络)*******************************************************/
