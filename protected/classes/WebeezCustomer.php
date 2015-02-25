@@ -4,6 +4,8 @@
  * @author vincent.mi@toursforfun.com
  */
 class WebeezCustomer extends CWebUser {
+    public $returnUrl = "";
+
 	function beforeLogin($id, $states, $fromCookie){
 		return true ;
 	}

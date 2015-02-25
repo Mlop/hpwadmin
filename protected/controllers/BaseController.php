@@ -917,6 +917,7 @@ class BaseController  extends CController{
      */
     public function afterLogin()
     {
+        /*
         $now = Yii::app()->db->createCommand("SELECT NOW() cur_time")->queryScalar();
         $today = date('Y-m-d 00:00:00', strtotime($now));
         $expHis = Yii::app()->db->createCommand()
@@ -960,7 +961,7 @@ class BaseController  extends CController{
 			$this->redirect(array_pop($after_login));
 		} else {
 			$this->redirect($this->createUrl('MyAccount/index'),true);
-		}
+		}*/
 	}
 
     /**

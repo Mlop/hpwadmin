@@ -7,6 +7,14 @@ class UserController extends BaseController
 		$this->render('index');
 	}
 
+    /**
+     * 包括进、出帐列表
+     */
+    public function actionList()
+    {
+        $this->render('index');
+    }
+
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
