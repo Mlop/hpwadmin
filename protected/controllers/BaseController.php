@@ -114,6 +114,9 @@ class BaseController  extends CController{
         $_GET = secure_array($_GET);
         $_POST = secure_array($_POST);
         $isGuest = Yii::app()->user->isGuest;
+        parent::__construct($id,$module);
+        //验证需要登陆的controller/action跳转到登陆页面
+        $this->checkLogin();
         // do not remove this, this configure is for website affiliate
 //        if(IS_QA_SITE){
 //            Yii::app()->params['domain'] = '.qa.toursforfun.com';
@@ -194,7 +197,7 @@ class BaseController  extends CController{
 //        Yii::app()->urlManager->secureHost = Yii::app()->params['catalogSecureUrl'];
 //        Yii::app()->urlManager->commonHost = Yii::app()->params['catalogUrl'];
 
-        parent::__construct($id,$module);
+
 
         $this->layout = 'common_layout';
 
@@ -218,6 +221,12 @@ class BaseController  extends CController{
         //Group Ordering
         if(!defined('GROUP_BUY_ON')) define('GROUP_BUY_ON',true); //Group Ordering power switch
     }
+
+    public function checkLogin()
+    {
+//        var_dump($this->getId(), $this->getAction());exit;
+    }
+
     /**
      * Returns a value indicating whether there is any validation error.
      * @param string $attribute attribute name. Use null to check all attributes.
@@ -965,6 +974,21 @@ class BaseController  extends CController{
 	}
 
     /**
+     * 执行action前的动作，这里主要过滤需要登陆的情况
+     * @param CAction $action
+     * @return bool|void
+     * @author vera.zhang 2015-02-25
+     */
+    protected function beforeAction($action)
+    {
+        $controller_id = $this->getId();
+        $action_id = $this->getAction()->getId();
+        $login_arr = array('incount', 'outcount');
+        if ($this->isGuest && in_array($controller_id, $login_arr)) {
+            $this->redirect($this->createUrl('user/login'));
+        }
+    }
+    /**
      * For cancelling the `forceMaster` option.
      *
      * @inheritdoc
@@ -972,7 +996,7 @@ class BaseController  extends CController{
     protected function afterAction($action)
     {
         parent::afterAction($action);
-
+//        var_dump($this->getId(), $this->getAction());exit;
         //Yii::app()->db->forceMaster = false;
     }
 
