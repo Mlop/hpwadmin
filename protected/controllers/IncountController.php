@@ -39,19 +39,18 @@ class IncountController extends BaseController
      */
     public function actionCreate()
     {
-        //登陆后才能添加
-        var_dump($this->isGuest);exit;
         $incountForm = Yii::app()->request->getParam('IncountForm');
         $formModel = new IncountForm;
         if (!is_null($incountForm)) {
             try {
+                unset($incountForm['customerName']);
+                $incountForm['user_id'] = 3;
                 $model = Incount::model();
                 $model->setAttributes($incountForm);
                 $model->setIsNewRecord(true);
                 $model->save();
-//                var_dump($incountForm);exit;
             } catch (Exception $ex) {
-                $this->addError($ex->getMessage());
+                $this->addError('customerName', $ex->getMessage());
             }
         }
         $this->render("form", array('model'=>$formModel));
@@ -60,8 +59,9 @@ class IncountController extends BaseController
     /**
      * get the incount list
      */
-    public function actionGetList()
+    public function actionList()
     {
-        $mode = Incount::model()->findAllByAttributes();
+        $mode = Incount::model()->findAllByAttributes(array('user_id'=>3));
+        $this->render("list", array('data'=>$mode));
     }
 }

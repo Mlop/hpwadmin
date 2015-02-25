@@ -14,12 +14,12 @@
     </tr>
     <tr>
         <td><?php echo $form->labelEx($model, 'money'); ?></td>
-        <td><?php echo $form->textField($model, 'money'); ?></td>
+        <td><?php echo $form->telField($model, 'money'); ?></td>
         <td><?php echo $form->error($model, 'money');?></td>
     </tr>
     <tr>
         <td><?php echo $form->labelEx($model, 'phone'); ?></td>
-        <td><?php echo $form->textField($model, 'phone'); ?></td>
+        <td><?php echo $form->telField($model, 'phone'); ?></td>
         <td><?php echo $form->error($model, 'phone');?></td>
     </tr>
     <tr>
