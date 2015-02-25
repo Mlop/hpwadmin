@@ -12,6 +12,7 @@ $this->breadcrumbs=array(
         <td>phone</td>
         <td>note</td>
         <td>addtime</td>
+        <td>operation</td>
     </tr>
     <?php if (count($data) > 0) {
     foreach($data as $row) { ?>
@@ -21,6 +22,9 @@ $this->breadcrumbs=array(
             <td><?php echo $row->phone?></td>
             <td><?php echo $row->note?></td>
             <td><?php echo $row->add_time?></td>
+            <td><?php echo CHtml::link('modify', $this->createUrl('incount/create', array('incount_id'=>$row->incount_id)))
+                    .'/'
+                    .CHtml::link('delete', $this->createUrl('incount/delete', array('incount_id'=>$row->incount_id))); ?></td>
         </tr>
     <?php }
 }?>

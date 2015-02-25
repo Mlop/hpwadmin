@@ -39,19 +39,34 @@ class IncountController extends BaseController
      */
     public function actionCreate()
     {
-        $incountForm = Yii::app()->request->getParam('IncountForm');
         $formModel = new IncountForm;
+        $incount_id = Yii::app()->request->getParam('incount_id');
+        //新增
+        $incountForm = Yii::app()->request->getParam('IncountForm');
         if (!is_null($incountForm)) {
             try {
                 unset($incountForm['customerName']);
                 $incountForm['user_id'] = 3;
-                $model = Incount::model();
-                $model->setAttributes($incountForm);
-                $model->setIsNewRecord(true);
-                $model->save();
+                
+                //修改
+                if ($incount_id) {
+                    $updateModel = Incount::model()->findByPk($incount_id);
+                    $updateModel->setAttributes($incountForm);
+                    $updateModel->save();
+                } else {
+                    $model = Incount::model();
+                    $model->setAttributes($incountForm);
+                    $model->setIsNewRecord(true);
+                    $model->save();
+                }
+
             } catch (Exception $ex) {
                 $this->addError('customerName', $ex->getMessage());
             }
+        }
+        //修改填充表单
+        if ($incount_id) {
+            $formModel->attributes = Incount::model()->findByPk($incount_id)->getAttributes();
         }
         $this->render("form", array('model'=>$formModel));
     }
