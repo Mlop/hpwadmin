@@ -4,7 +4,15 @@ class UserController extends BaseController
 {
 	public function actionIndex()
 	{
-		$this->render('index');
+
+        $inStat = Incount::model()->findAll(array('select'=>'customer_id,sum(money) as money','condition'=>'user_id=:userID', 'params'=>array(':userID'=>3), 'group'=>'customer_id'));
+        foreach($inStat as $row) {
+            echo $row->customer_id.' '.$row->money.' '.$row->customer->name;
+        }
+        $data = array(
+            'incount'=>$inStat
+        );
+		$this->render('general', $data);
 	}
 
     /**
