@@ -12,7 +12,8 @@ class UserController extends BaseController
      */
     public function actionList()
     {
-        $this->render('index');
+        $mode = User::model()->findAll();
+        $this->render("list", array('data'=>$mode));
     }
 
 	// Uncomment the following methods and override them if needed
@@ -73,21 +74,61 @@ class UserController extends BaseController
     }
 
     /**
+     * delete a customer record, include incount and outcount record
+     */
+    public function actionDelete()
+    {
+        $user_id = Yii::app()->request->getParam('user_id');
+        $return = array('error'=>0, 'msg'=>'');
+        if ($user_id) {
+            try {
+                Incount::model()->deleteAllByAttributes(array('user_id'=>$user_id));
+                Outcount::model()->deleteAllByAttributes(array('user_id'=>$user_id));
+                User::model()->deleteByPk($user_id);
+            } catch (Exception $ex) {
+                $return = array('error'=>1, 'msg'=>'delete error');
+                echo CJSON::encode($return);
+                return;
+            }
+            echo CJSON::encode($return);
+        } else {
+            $return = array('error'=>1, 'msg'=>'no id');
+            echo CJSON::encode($return);
+            return;
+        }
+    }
+
+    /**
      * reset user password
      */
     public function actionResetPasswd()
     {
         $user_id = Yii::app()->request->getParam('user_id');
         $user_name = Yii::app()->request->getParam('user_name');
+        $userForm = Yii::app()->request->getParam('User');
+
+        $isadmin = false;
         //supper administrator can reset password directely
         if ($user_name && $user_name == "admin") {
-
+            $formModel = new User('adminresetpwd');
+            $isadmin = true;
+        } else {
+            $formModel = new User('resetpasswd');
         }
-        $formModel = new UserForm;
-        //fill form when modify
+        if (!is_null($userForm)) {
+            $formModel->attributes = $userForm;
+            if ($formModel->validate()) {
+                $resetModel = User::model()->findByPk($user_id);
+                $resetModel->setAttributes(array('password'=>User::encrypt($userForm['newpassword'])));
+                $resetModel->save();
+            }
+        }
+
+        //fill form when reset
         if ($user_id) {
             $formModel->attributes = User::model()->findByPk($user_id)->getAttributes();
         }
-        $this->render("reset_password", array('model'=>$formModel));
+
+        $this->render("reset_password", array('model'=>$formModel, 'isadmin'=>$isadmin));
     }
 }

@@ -116,6 +116,7 @@ class BaseController  extends CController{
         $_POST = secure_array($_POST);
         $isGuest = Yii::app()->user->getIsGuest();
 //        $isLogin = Yii::app()->user->isLogin;
+        Yii::app()->setLanguage('zh_cn');
         parent::__construct($id,$module);
         // do not remove this, this configure is for website affiliate
 //        if(IS_QA_SITE){
