@@ -16,8 +16,8 @@
 				padding-top: 50px;
 				padding-bottom: 40px;
 			}
-			.main{
-				height:200px;
+			.main {
+				height: 100px;
 			}
 		</style>
 	</head>
@@ -47,20 +47,20 @@
 				<div class="col-sm-6">
 					<div class="panel panel-primary">
 						<div class="panel-heading">
-							今年收账：30000
+							本年收支：&yen;30,000
 						</div>
 						<div class="panel-body">
-							<div id="thisyear" class="main"></div>
+							<div id="thisyear" data-type='thisyear' class="main"></div>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="panel panel-primary">
 						<div class="panel-heading">
-							去年收账：30000
+							总计收支：&yen;50,000
 						</div>
 						<div class="panel-body">
-							<div id="lastyear" class="main"></div>
+							<div id="lastyear" data-type='lastyear' class="main"></div>
 						</div>
 					</div>
 				</div>
@@ -73,103 +73,143 @@
 		<script src="js/bootstrap/js/bootstrap.min.js"></script>
 		<script src="js/echarts/build/dist/echarts.js"></script>
 		<script>
-		$(function(){
-			require.config({
-				paths: {
-					echarts: 'js/echarts/build/dist'
-				}
-			});
-			require(['echarts', 'echarts/chart/pie'], function(ec) {
-				var chartRenders = $('.main');
-				//var myChart = ec.init(document.getElementById('lastyear'));
-				var option = {
-					/*tooltip: {
-						trigger: 'item',
-						formatter: "{a} <br/>{b} : {c} ({d}%)"
-					},*/
-					/*legend: {
-						orient: 'vertical',
-						x: 'left',
-						data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
-					},*/
-					/*toolbox: {
-						show: true,
-						feature: {
-							mark: {
-								show: true
-							},
-							dataView: {
-								show: true,
-								readOnly: false
-							},
-							magicType: {
-								show: true,
-								type: ['pie', 'funnel'],
-								option: {
-									funnel: {
-										x: '25%',
-										width: '50%',
-										funnelAlign: 'center',
-										max: 1548
-									}
-								}
-							},
-							restore: {
-								show: true
-							},
-							saveAsImage: {
-								show: true
-							}
-						}
-					},*/
-					calculable: true,
-					series: [{
-						name: '访问来源',
-						type: 'pie',
-						radius: ['50%', '70%'],
-						itemStyle: {
-							normal: {
-								label: {
-									show: false
-								},
-								labelLine: {
-									show: false
-								}
-							},
-							/*emphasis: {
-								label: {
-									show: true,
-									position: 'center',
-									textStyle: {
-										fontSize: '30',
-										fontWeight: 'bold'
-									}
-								}
-							}*/
-						},
-						data: [{
-							value: 335,
-							name: '直接访问'
-						}, {
-							value: 310,
-							name: '邮件营销'
-						}, {
-							value: 234,
-							name: '联盟广告'
-						}, {
-							value: 135,
-							name: '视频广告'
-						}, {
-							value: 1548,
-							name: '搜索引擎'
-						}]
-					}]
-				};
-				chartRenders.each(function(i){
-					ec.init($(this)[0]).setOption(option);
+			$(function() {
+				require.config({
+					paths: {
+						echarts: 'js/echarts/build/dist'
+					}
 				});
-			});			
-		});
+				require(['echarts', 'echarts/chart/pie'], function(ec) {
+					var chartRenders = $('.main');
+					//var myChart = ec.init(document.getElementById('lastyear'));
+					var option = {
+						tooltip: {
+							trigger: 'item',
+							formatter: "{b} : {c} ({d}%)"
+						},
+						/*legend: {
+							orient: 'vertical',
+							x: 'left',
+							data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+						},*/
+						/*toolbox: {
+							show: true,
+							feature: {
+								mark: {
+									show: true
+								},
+								dataView: {
+									show: true,
+									readOnly: false
+								},
+								magicType: {
+									show: true,
+									type: ['pie', 'funnel'],
+									option: {
+										funnel: {
+											x: '25%',
+											width: '50%',
+											funnelAlign: 'center',
+											max: 1548
+										}
+									}
+								},
+								restore: {
+									show: true
+								},
+								saveAsImage: {
+									show: true
+								}
+							}
+						},*/
+						//calculable: true,
+						series: [{
+							name: '收支',
+							type: 'pie',
+							//radius: ['50%', '70%'],
+							radius: '55%',
+							center: ['50%', '60%'],
+							itemStyle: {
+								normal: {
+									label: {
+										show: false
+									},
+									labelLine: {
+										show: false
+									}
+								},
+								/*emphasis: {
+									label: {
+										show: true,
+										position: 'center',
+										textStyle: {
+											fontSize: '30',
+											fontWeight: 'bold'
+										}
+									}
+								}*/
+							}/*,
+							data: [{
+								value: 335,
+								name: '直接访问'
+							}]*/
+						}]
+					};
+					chartRenders.each(function(i) {
+						var _t = $(this), chart = ec.init(_t[0]);//,$o=$.extend(true, option, {series:data:getBalanceData(_t.attr('data-type'))}});
+						option.series[0].data=getBalanceData(_t.attr('data-type'));
+						console.log(option);
+						chart.setOption(option);
+						/*var d = ;
+						if (d) {
+							for (var i = 0, length = d.length; i < length; i++) {
+								chart.addData([
+									[
+										0, // 系列索引
+										d[i],
+										false, // 新增数据是否从队列头部插入
+										true
+									]
+								]);
+							}
+						}*/
+						/*chart.addData([[
+							0, // 系列索引
+							[{
+								value: 458,
+								name: 'Chrome'
+							}],
+							false, // 新增数据是否从队列头部插入
+							true//, // 是否增加队列长度，false则自定删除原有数据，队头插入删队尾，队尾插入删队头
+							//"测试动态添加数据"
+						]]);*/
+					});
+				});
+			});
+			/**
+			 * @description 获取收支数据
+			 * @param {Object} type 获取的数据类型
+			 */
+			function getBalanceData(type) {
+				if (type == 'thisyear') {
+					return [{
+						value: 10000,
+						name: '收入'
+					}, {
+						value: 20000,
+						name: '支出'
+					}];
+				}
+				if (type == 'lastyear') {
+					return [{
+						value: 10000,
+						name: '收入'
+					}, {
+						value: 40000,
+						name: '支出'
+					}];
+				}
+			}
 		</script>
 	</body>
 
