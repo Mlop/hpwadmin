@@ -2,6 +2,11 @@
 
 class IncountController extends BaseController
 {
+    public function __construct($id, $module = null)
+    {
+        parent::__construct($id, $module);
+        $this->breadcrumbs->add('incount', $this->createUrl('incount/list'));
+    }
 	public function actionIndex()
 	{
 		$this->render('index');
@@ -39,21 +44,21 @@ class IncountController extends BaseController
      */
     public function actionCreate()
     {
-        $formModel = new IncountForm;
+        $this->breadcrumbs->add('create');
+
         $incount_id = Yii::app()->request->getParam('incount_id');
-        //新增
         $incountForm = Yii::app()->request->getParam('IncountForm');
         if (!is_null($incountForm)) {
             try {
                 unset($incountForm['customerName']);
                 $incountForm['user_id'] = 3;
-                
-                //修改
+
+                //modify
                 if ($incount_id) {
                     $updateModel = Incount::model()->findByPk($incount_id);
                     $updateModel->setAttributes($incountForm);
                     $updateModel->save();
-                } else {
+                } else {//new record
                     $model = Incount::model();
                     $model->setAttributes($incountForm);
                     $model->setIsNewRecord(true);
@@ -64,11 +69,36 @@ class IncountController extends BaseController
                 $this->addError('customerName', $ex->getMessage());
             }
         }
-        //修改填充表单
+
+        $formModel = new IncountForm;
+        //fill form when modify
         if ($incount_id) {
             $formModel->attributes = Incount::model()->findByPk($incount_id)->getAttributes();
         }
         $this->render("form", array('model'=>$formModel));
+    }
+
+    /**
+     * delete a incount record
+     */
+    public function actionDelete()
+    {
+        $incount_id = Yii::app()->request->getParam('incount_id');
+        $return = array('error'=>0, 'msg'=>'');
+        if ($incount_id) {
+            try {
+                Incount::model()->deleteByPk($incount_id);
+            } catch (Exception $ex) {
+                $return = array('error'=>1, 'msg'=>'delete error');
+                echo CJSON::encode($return);
+                return;
+            }
+            echo CJSON::encode($return);
+        } else {
+            $return = array('error'=>1, 'msg'=>'no id');
+            echo CJSON::encode($return);
+            return;
+        }
     }
 
     /**

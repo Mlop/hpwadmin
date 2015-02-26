@@ -12,6 +12,9 @@ class IncountForm extends CFormModel
     public $note;
     public $customerName;
     public $customer_id;
+    public $incount_id;
+    public $add_time;
+    public $user_id;
 
 	/**
 	 * Declares the validation rules.
@@ -24,7 +27,7 @@ class IncountForm extends CFormModel
 			// username and password are required
 			array('money, phone', 'required'),
 			// password needs to be authenticated
-			array('note, customerName, customer_id', 'safe'),
+			array('note, customerName, customer_id, incount_id, add_time, user_id', 'safe'),
 		);
 	}
 
@@ -39,23 +42,4 @@ class IncountForm extends CFormModel
             'note'=>'Note',
 		);
 	}
-
-//    public function register($attributes)
-//    {
-//        try {
-//            $attributes['password'] = User::encrypt($attributes['password']);
-//            $this->password = $attributes['password'];
-//            $user = User::model();
-//            $user->setAttributes($attributes);
-//            $user->setIsNewRecord(true);
-//            $user->save();
-//
-//            $userIdentity = new UserIdentity($this->name, $this->password);
-//            Yii::app()->user->login($userIdentity);
-//        } catch (Exception $ex) {
-//            $this->addError('name',$ex->getMessage());
-//            return false;
-//        }
-//        return true;
-//    }
 }

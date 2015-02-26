@@ -41,4 +41,53 @@ class UserController extends BaseController
 		);
 	}
 	*/
+    /**
+     * modify user information
+     */
+    public function actionModify()
+    {
+        $user_id = Yii::app()->request->getParam('user_id');
+        $userForm = Yii::app()->request->getParam('UserForm');
+        if (!is_null($userForm)) {
+            try {
+                //modify
+                if ($user_id) {
+                    $updateModel = User::model()->findByPk($user_id);
+                    $updateModel->setAttributes($userForm);
+                    $updateModel->save();
+                } else {
+                    echo 'no user id';
+                }
+            } catch (Exception $ex) {
+                $this->addError($ex->getMessage());
+            }
+            echo 'save successfully';
+        }
+
+        $formModel = new UserForm;
+        //fill form when modify
+        if ($user_id) {
+            $formModel->attributes = User::model()->findByPk($user_id)->getAttributes();
+        }
+        $this->render("form", array('model'=>$formModel));
+    }
+
+    /**
+     * reset user password
+     */
+    public function actionResetPasswd()
+    {
+        $user_id = Yii::app()->request->getParam('user_id');
+        $user_name = Yii::app()->request->getParam('user_name');
+        //supper administrator can reset password directely
+        if ($user_name && $user_name == "admin") {
+
+        }
+        $formModel = new UserForm;
+        //fill form when modify
+        if ($user_id) {
+            $formModel->attributes = User::model()->findByPk($user_id)->getAttributes();
+        }
+        $this->render("reset_password", array('model'=>$formModel));
+    }
 }

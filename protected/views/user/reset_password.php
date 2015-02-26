@@ -1,6 +1,6 @@
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
-        'id'=>'customer-form',
+        'id'=>'user-form',
         'enableClientValidation'=>true,
         'clientOptions'=>array(
             'validateOnSubmit'=>true,
@@ -13,9 +13,9 @@
         <td><?php echo $form->error($model, 'name');?></td>
     </tr>
     <tr>
-        <td><?php echo $form->labelEx($model, 'type'); ?></td>
-        <td><?php echo $form->radioButtonList($model, 'type', CustomerForm::getTypeListData()); ?></td>
-        <td><?php echo $form->error($model, 'type');?></td>
+        <td><?php echo $form->labelEx($model, 'oldpassword'); ?></td>
+        <td><?php echo $form->textField($model, 'oldpassword'); ?></td>
+        <td><?php echo $form->error($model, 'oldpassword');?></td>
     </tr>
     <tr>
         <td><?php echo CHtml::submitButton('submit'); ?></td>

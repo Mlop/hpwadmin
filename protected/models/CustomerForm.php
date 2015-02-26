@@ -33,4 +33,20 @@ class CustomerForm extends CFormModel
             'type'=>'Type',
 		);
 	}
+
+    /**
+     * get customer type list data, used for generate form field
+     * array(2) { [0]=> string(9) "借款人" [1]=> string(9) "贷款人" }
+     */
+    public static function getTypeListData()
+    {
+        return CHtml::listData(
+            array(
+                array('value' => 0,'name' => t('operation', 'BORROWER')),
+                array('value' => 1,'name' => t('operation', 'LENDER'))
+            ),
+            'value',
+            'name'
+        );
+    }
 }

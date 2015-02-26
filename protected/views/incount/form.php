@@ -1,3 +1,10 @@
+<?php
+/* @var $this IncountController */
+$this->breadcrumbs->display();
+//$this->breadcrumbs=array(
+//    'Incount','create',
+//);
+?>
 <div class="form">
 <?php $form=$this->beginWidget('CActiveForm', array(
         'id'=>'incount-form',
@@ -27,8 +34,8 @@
         <td><?php echo $form->textArea($model, 'note'); ?></td>
     </tr>
     <tr>
-        <td><?php echo CHtml::submitButton('submit'); ?></td>
-        <td><?php echo CHtml::resetButton(); ?></td>
+        <td><?php echo CHtml::submitButton(t('operation', 'SUBMIT')); ?></td>
+        <td><?php echo CHtml::resetButton(t('operation', 'CANCEL')); ?></td>
     </tr>
 </table>
 <?php $this->endWidget(); ?>

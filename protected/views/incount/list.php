@@ -1,9 +1,9 @@
 <?php
 /* @var $this IncountController */
-
-$this->breadcrumbs=array(
-	'Incount',
-);
+$this->breadcrumbs->display();
+//$this->breadcrumbs=array(
+//	'Incount',
+//);
 ?>
 <table>
     <tr>
