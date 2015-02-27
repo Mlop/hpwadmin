@@ -1,9 +1,9 @@
-<!DOCTYPE HTML>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html>
     <head>
         <?php require_once('_head_tags.php'); ?>
     </head>
-    <body class="<?php echo $this->body_class ?>">
+    <body>
         <div class="navbar navbar-fixed-top" role="navigation" id="menu-nav">
             <div class="container-fluid">
                 <div class="navbar-header">

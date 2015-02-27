@@ -12,6 +12,9 @@
         padding-top: 50px;
         padding-bottom: 40px;
     }
+    .main{
+        height:200px;
+    }
 </style>
 
 

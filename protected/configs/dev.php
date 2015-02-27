@@ -86,7 +86,7 @@ return array(
             'allowAutoLogin' => true
         ),
 		'db'=>array(
-			'connectionString' => 'sqlite:/vagrant/hpw/hpw.db',
+			'connectionString' => 'sqlite:/vagrant/hpw/protected/data/hpw.db',
 //            'class' => 'webeez.extensions.DbConnection', //CDbConnection
 //            'emulatePrepare' => true,
 //            'charset' => 'utf8',

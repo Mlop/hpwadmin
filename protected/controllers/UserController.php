@@ -6,11 +6,18 @@ class UserController extends BaseController
 	{
 
         $inStat = Incount::model()->findAll(array('select'=>'customer_id,sum(money) as money','condition'=>'user_id=:userID', 'params'=>array(':userID'=>3), 'group'=>'customer_id'));
-        foreach($inStat as $row) {
-            echo $row->customer_id.' '.$row->money.' '.$row->customer->name;
+        $outStat = Outcount::model()->findAll(array('select'=>'customer_id,sum(money) as money','condition'=>'user_id=:userID', 'params'=>array(':userID'=>3), 'group'=>'customer_id'));
+        $incount = array();
+        foreach ($inStat as $row) {
+            $incount[] = array('name'=>$row->customer->name, 'value'=>$row->money);
+        }
+        $outcount = array();
+        foreach ($outStat as $row) {
+            $outcount[] = array('name'=>$row->customer->name, 'value'=>$row->money);
         }
         $data = array(
-            'incount'=>$inStat
+            'incount'=>CJSON::encode($incount),
+            'outcount'=>CJSON::encode($outcount),
         );
 		$this->render('general', $data);
 	}
