@@ -32,13 +32,13 @@ class UserIdentity extends CUserIdentity
 	public function authenticate()
 	{
         $user = User::model()->findByAttributes(array('name'=>$this->name));
-
         if (count($user) == 0) {
             $this->errorCode = ERROR_USER_NOT_EXISTS;
         } else if (User::validatePassword($user->password, $this->password) === false) {
             $this->errorCode = ERROR_PASSWORD_INVALID;
         } else {
             $this->errorCode = self::ERROR_NONE;
+            $this->user = $user;
         }
 
         return $this->errorCode;
@@ -74,7 +74,7 @@ class UserIdentity extends CUserIdentity
 
     public function getId()
     {
-        return $this->user->user_id ;
+        return $this->user->user_id;
     }
 
     public function getUser()

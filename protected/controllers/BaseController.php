@@ -177,7 +177,7 @@ class BaseController  extends CController{
 
 
 //使用模板
-//        $this->layout = 'common_layout';
+        $this->layout = 'common_layout';
         $this->breadcrumbs = new Breadcrumbs();
         $this->breadcrumbs->add('Home', Yii::app()->homeUrl);
 ////
