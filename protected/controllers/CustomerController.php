@@ -14,7 +14,7 @@ class CustomerController extends BaseController
     public function actionCreate()
     {
         $customer_id = Yii::app()->request->getParam('customer_id');
-        $customerForm = Yii::app()->request->getParam('CustomerForm');
+        $customerForm = Yii::app()->request->getParam('Customer');
         if (!is_null($customerForm)) {
             try {
                 //modify
@@ -34,7 +34,7 @@ class CustomerController extends BaseController
             echo 'save successfully';
         }
 
-        $formModel = new CustomerForm;
+        $formModel = new Customer;
         //fill form when modify
         if ($customer_id) {
             $formModel->attributes = Customer::model()->findByPk($customer_id)->getAttributes();

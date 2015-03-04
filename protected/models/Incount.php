@@ -34,7 +34,7 @@ class Incount extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('customer_id', 'required'),
+            array('money, phone', 'required'),
 			array('customer_id, user_id', 'numerical', 'integerOnly'=>true),
 			array('money', 'numerical'),
 			array('phone', 'length', 'max'=>50),

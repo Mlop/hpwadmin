@@ -1,34 +1,31 @@
 <?php
-function array_convert_chinese(&$input){
-    $input = ChineseTrans::trad($input);
-}
-class BaseController  extends CController{
-
+class BaseController extends CController
+{
     /**
      * <head> <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
      * @property {String} ieDocMode
      */
-    public $ieDocMode = 'IE=edge';
+//    public $ieDocMode = 'IE=edge';
 
     public $breadcrumbs = null;
     public $baseUrl = null;
-    public $imageUrl = null;
-    public $imagesUrl = null;
-    public $current_uri = null;
-    public $language = null;
-    public $language_name = null;
-    public $language_id = null;
+//    public $imageUrl = null;
+//    public $imagesUrl = null;
+//    public $current_uri = null;
+//    public $language = null;
+//    public $language_name = null;
+//    public $language_id = null;
     public $session = null;
-    public $cookie_domain = null;
-    public $cookie_path = null;
+//    public $cookie_domain = null;
+//    public $cookie_path = null;
     public $mainImagesabsuPath = null;
-    public $cc = null;
-    public $cart = null;
-    public $order = null;
-    public $curr_page = null;
-    public $navigation = null;//NavigationHistory
-    public $customers_advertiser = null;
-    public $customers_ad_click_id = null;
+//    public $cc = null;
+//    public $cart = null;
+//    public $order = null;
+//    public $curr_page = null;
+//    public $navigation = null;//NavigationHistory
+//    public $customers_advertiser = null;
+//    public $customers_ad_click_id = null;
     public $error = array();
     private static $_db;
     /**
@@ -45,79 +42,92 @@ class BaseController  extends CController{
      * @author vincent
      */
     public $pageKey = null;
-    public $nofollowedindexed = false;
+//    public $nofollowedindexed = false;
     //current store id
-    public $sysCurrStoreId = 4 ;
-    public $affiliate_clickthroughs_id = null;
-    public $affiliate_clientbrowser= null;
-    public $affiliate_clientdate = null;
-    public $affiliate_clientip = null;
-    public $affiliate_ref = null;
-    public $authCustomer = null;
+//    public $sysCurrStoreId = 4 ;
+//    public $affiliate_clickthroughs_id = null;
+//    public $affiliate_clientbrowser= null;
+//    public $affiliate_clientdate = null;
+//    public $affiliate_clientip = null;
+//    public $affiliate_ref = null;
+//    public $authCustomer = null;
 
-    public $mainTabIndex = 0;
-    public $body_class = 'w-1000';
+//    public $mainTabIndex = 0;
+//    public $body_class = 'w-1000';
 
-    const MSG_ERROR = 'error';
-    const MSG_SUCCESS ='success';
-    const MSG_NOTICE = 'notice';
+//    const MSG_ERROR = 'error';
+//    const MSG_SUCCESS ='success';
+//    const MSG_NOTICE = 'notice';
 
     /* ClickTale */
-    public $show_clicktale_condition = array(
-        '',
-        '6-days-east-coast-deluxe-tour-package-a.html',
-        '13-day-usa-east-west-hawaii-new-york-shopping-a-tour.html',
-        '7-day-east-coast-5-cities-niagara-falls-deep-tour.html',
-        '3-day-washington-dc-philadelphia-thousand-island-and-niagara-falls-tour.html',
-        'one-day-new-york-tour-ll.html',
-        '7-day-bus-tour-of-mt-rushmore-and-yellowstone-bus-tour.html',
-        '1-day-los-angeles-city-tour.html',
-        '10-day-tellowstone-west-walk-powell-sfo-yosemite-tour.html'
-    );
-    public $show_clicktale = false;
+//    public $show_clicktale_condition = array(
+//        '',
+//        '6-days-east-coast-deluxe-tour-package-a.html',
+//        '13-day-usa-east-west-hawaii-new-york-shopping-a-tour.html',
+//        '7-day-east-coast-5-cities-niagara-falls-deep-tour.html',
+//        '3-day-washington-dc-philadelphia-thousand-island-and-niagara-falls-tour.html',
+//        'one-day-new-york-tour-ll.html',
+//        '7-day-bus-tour-of-mt-rushmore-and-yellowstone-bus-tour.html',
+//        '1-day-los-angeles-city-tour.html',
+//        '10-day-tellowstone-west-walk-powell-sfo-yosemite-tour.html'
+//    );
+//    public $show_clicktale = false;
 
     /**
      * all message
      * @var array
      */
-    protected $messages = array();
+//    protected $messages = array();
 
     /**
      * parameters for site click
      */
     // the parameter that identify the click source, default 'clk_source'
-    public $paramSource = 'clk_source';
-    // the parameter that identify the click term, default 'clk_term'
-    public $paramTerm = 'clk_term';
+//    public $paramSource = 'clk_source';
+//    // the parameter that identify the click term, default 'clk_term'
+//    public $paramTerm = 'clk_term';
+//
+//    /**
+//     * parameter for affiliate
+//     */
+//    public $is_affiliate_site_request = false;
+//    public $affiliateSiteHelper = null;
+//    public $affiliateSiteId = null; // affiliate_id of site
+//    public $common_client_script  = true;
 
-    /**
-     * parameter for affiliate
-     */
-    public $is_affiliate_site_request = false;
-    public $affiliateSiteHelper = null;
-    public $affiliateSiteId = null; // affiliate_id of site
-    public $common_client_script  = true;
 
-    /**
-     * parameter for checking guest. true/false
-     */
+    //parameter for checking guest. true/false
     public $isGuest = true;
     public $isLogin = true;
+    //logined User object
+    public $loginUser;
+
+    protected $request;
     /**
      * @var array errors should show on views
      */
     private $_errors = array();
 
-    public function __construct($id,$module = null){
-        //2013-12-20, eric, check whether the request comes from a affiliate site(user use a sub-domain)
-//        $this->is_affiliate_site_request = DomainListener::isAffiliateSiteRequest();
-        //20140505 vincent . filter XSS str for PCI scan.
+    public function __construct($id, $module = null)
+    {
         $_GET = secure_array($_GET);
         $_POST = secure_array($_POST);
         $isGuest = Yii::app()->user->getIsGuest();
-//        $isLogin = Yii::app()->user->isLogin;
         Yii::app()->setLanguage('zh_cn');
-        parent::__construct($id,$module);
+        parent::__construct($id, $module);
+        //使用模板
+        $this->layout = 'common_layout';
+        $this->breadcrumbs = new Breadcrumbs();
+        $this->breadcrumbs->add('Home', Yii::app()->homeUrl);
+        $this->request = Yii::app()->request;
+
+        //登陆用户信息
+        $this->session = Yii::app()->getSession();
+        $this->session->open();
+        $this->isLogin = $this->session['is_login'];
+        $this->loginUser = $this->session['user'];
+        $this->baseUrl = Yii::app()->baseUrl;
+
         // do not remove this, this configure is for website affiliate
 //        if(IS_QA_SITE){
 //            Yii::app()->params['domain'] = '.qa.toursforfun.com';
@@ -157,35 +167,10 @@ class BaseController  extends CController{
 ////            }
 //        }
 
-//        $this->sysCurrStoreId = isset(Yii::app()->params['storeId']) ?Yii::app()->params['storeId'] : 2 ;
-//
-//		$host = $_SERVER['HTTP_HOST'];
-		//fix domain
-//		if($host == 'toursforfun.com'){
-//			$this->redirect('http://cn.toursforfun.com' . Yii::app()->request->requestUri, true, 301);
-//		}
-//        if(TOURS_HOMEPAGE_BAIDU_AUDIT == 'on'){
-//            $this->defineNewLanguageID();
-//        }else{
-//            $this->defineLanguageID();
-//        }
-
-
         //we just add catalogSecureUrl,catalogUrl to params. this config will overrite urlManager's config. by vincent
 //        Yii::app()->urlManager->secureHost = Yii::app()->params['catalogSecureUrl'];
 //        Yii::app()->urlManager->commonHost = Yii::app()->params['catalogUrl'];
 
-
-//使用模板
-        $this->layout = 'common_layout';
-        $this->breadcrumbs = new Breadcrumbs();
-        $this->breadcrumbs->add('Home', Yii::app()->homeUrl);
-////
-//        $this->session = Yii::app()->getSession();
-//        $this->session->open();
-//
-//        //customer_id session
-//        $this->session['customer_id'] = Yii::app()->user->id;
 //
 ////        $this->navigation = new NavigationHistory();
 //        $this->baseUrl = Yii::app()->baseUrl;
@@ -194,9 +179,6 @@ class BaseController  extends CController{
 //        $this->cookie_path = '/';
 //
 //        $this->mainImagesabsuPath = Yii::app()->params['mainImagesabsuPath'];
-//
-//        //Group Ordering
-//        if(!defined('GROUP_BUY_ON')) define('GROUP_BUY_ON',true); //Group Ordering power switch
     }
 
     /**
@@ -273,6 +255,59 @@ class BaseController  extends CController{
         self::$_db = Yii::app()->db;
         return self::$_db;
     }
+
+    /**
+     * (non-PHPdoc) pass $data to layout page
+     * @see CController::render()
+     * @auth vincent
+     */
+    public function render($view, $data = null, $return = false, $trans = true)
+    {
+        if ($this->beforeRender($view)) {
+            $output = $this->renderPartial($view, $data, true);
+            if (($layoutFile = $this->getLayoutFile($this->layout))!==false) {
+                $data['content'] = $output;
+                $output=$this->renderFile($layoutFile, $data, true);
+            }
+            $this->afterRender($view, $output);
+            $output=$this->processOutput($output, $trans);
+            if ($return) {
+                return $output;
+            } else {
+                echo $output;
+            }
+        }
+    }
+
+    /**
+     * 执行action前的动作，这里主要过滤需要登陆的情况
+     * @param CAction $action
+     * @return bool|void
+     * @author vera.zhang 2015-02-25
+     */
+    protected function beforeAction($action)
+    {
+        $controller_id = $this->getId();
+        $action_id = $this->getAction()->getId();
+        $login_arr = array('incount', 'outcount');
+        if (!$this->isLogin && in_array($controller_id, $login_arr)) {
+            $this->redirect($this->createUrl('user/login'));
+        }
+        return true;
+    }
+
+    /**
+     * set meta tag <description>
+     * @param unknown $desc
+     */
+    public function setPageDescription($desc){
+        $this->pageDesc = $desc;
+    }
+
+    public function setPageKeywords($keywords){
+        $this->pageKey = $keywords;
+    }
+
     /**
      * @todo initialize affiliate site
      * @name initializeAffiliateSite
@@ -550,17 +585,7 @@ class BaseController  extends CController{
 //        }
 //    }
 
-    /**
-     * set meta tag <description>
-     * @param unknown $desc
-     */
-    public function setPageDescription($desc){
-        $this->pageDesc = $desc;
-    }
 
-    public function setPageKeywords($keywords){
-        $this->pageKey = $keywords;
-    }
 
     /**
      * Create full or relative URL with a GET params forward
@@ -655,26 +680,7 @@ class BaseController  extends CController{
 //        ));
 //    }
 
-    /**
-     * (non-PHPdoc) pass $data to layout page
-     * @see CController::render()
-     * @auth vincent
-     */
-    public function render($view,$data=null,$return=false, $trans = true){
-        if($this->beforeRender($view)){
-            $output=$this->renderPartial($view,$data,true);
-            if(($layoutFile=$this->getLayoutFile($this->layout))!==false){
-                $data['content'] = $output;
-                $output=$this->renderFile($layoutFile,$data,true);
-            }
-            $this->afterRender($view,$output);
-            $output=$this->processOutput($output,$trans);
-            if($return)
-                return $output;
-            else
-                echo $output;
-        }
-    }
+
 
     /**
      * convert GET/POST/REQUEST to schinese
@@ -945,29 +951,5 @@ class BaseController  extends CController{
 		}*/
 //	}
 
-    /**
-     * 执行action前的动作，这里主要过滤需要登陆的情况
-     * @param CAction $action
-     * @return bool|void
-     * @author vera.zhang 2015-02-25
-     */
-    protected function beforeAction($action)
-    {
-        $controller_id = $this->getId();
-        $action_id = $this->getAction()->getId();
-        $login_arr = array('incount', 'outcount');
-        if (!$this->isLogin && in_array($controller_id, $login_arr)) {
-            $this->redirect($this->createUrl('site/login'));
-        }
-        return true;
-    }
 
-//    public function filters()
-//    {
-//        return array(
-//            array(
-//                'webeez.classes.WebeezRequestFilter',
-//            )
-//        );
-//    }
 }

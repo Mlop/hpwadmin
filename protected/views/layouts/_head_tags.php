@@ -7,13 +7,28 @@
 <title><?php echo $this->pageTitle !=''? $this->pageTitle : "收账管理系统";?></title>
 <?php Yii::app()->clientScript->registerCssFile('/js/bootstrap/css/bootstrap.min.css');?>
 <?php Yii::app()->clientScript->registerCssFile('/js/bootstrap/css/bootstrap-theme.min.css');?>
+<?php Yii::app()->clientScript->registerCssFile('/js/jQuery/jquery.mobile-1.4.5/jquery.mobile-1.4.5.css');?>
 <style>
-    body {
-        padding-top: 50px;
-        padding-bottom: 40px;
-    }
     .main{
-        height:200px;
+        height:100px;
+    }
+    .custom-corners .ui-bar{
+        -webkit-border-top-left-radius: inherit;
+        border-top-left-radius: inherit;
+        -webkit-border-top-right-radius: inherit;
+        border-top-right-radius: inherit;
+    }
+    .custom-corners .ui-body{
+        -webkit-border-bottom-left-radius: inherit;
+        border-bottom-left-radius: inherit;
+        -webkit-border-bottom-right-radius: inherit;
+        border-bottom-right-radius: inherit;
+    }
+    .panel-title-thisyear span:before{
+        content: '今年：';
+    }
+    .panel-title-lastyear span:before{
+        content: '往年：';
     }
 </style>
 

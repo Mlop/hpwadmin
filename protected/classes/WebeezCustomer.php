@@ -14,10 +14,12 @@ class WebeezCustomer extends CWebUser {
      * is_login: the state weather login
      * LoginDate: last login date
 	 */
-	function afterLogin($user){
+	function afterLogin($user)
+    {
+        $this->session['user'] = $this->user->user;
         $this->session['user_id'] = $this->id;
         $this->session['is_login'] = (isset($this->session['user_id']) && $this->session['user_id'] > 0) ? true : false;
-        setcookie('LoginDate', date('Ymd his',time()));
+        setcookie('LoginDate', date('Ymd his', time()));
         return true;
 	}
 

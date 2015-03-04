@@ -9,3 +9,4 @@ $this->breadcrumbs->add('首页', $this->baseUrl);
 error: 0=无错误；>0表示错误码；
 msg：错误说明信息；
 示例：{'error':0,'msg':''}
+4. 需要一个公共错误跳转页面，显示致命错误，如数据库错误

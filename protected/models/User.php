@@ -22,6 +22,8 @@ class User extends CActiveRecord
     public $newpassword;
     public $retrypassword;
 
+    private $_identity;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -39,23 +41,21 @@ class User extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'length', 'max'=>100),
-            array('name', 'unique', 'on'=>'register'),
 			array('password', 'length', 'max'=>50, 'min'=>4),
-			array('add_time, last_login_time', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
+            array('newpassword', 'length', 'max'=>50,'min'=>4),
+            array('add_time, last_login_time', 'safe'),
 			array('user_id, name, password, add_time, last_login_time', 'safe', 'on'=>'search'),
+
+            //login
+            array('name, password', 'required', 'on'=>'login,register'),
+            array('password', 'authenticateLogin', 'on'=>'login'),
+            array('name', 'unique', 'on'=>'register'),
             // when reset password normal
             array('name, oldpassword', 'required', 'on'=>'resetpasswd'),
             array('oldpassword', 'authenticate_oldpasswd', 'on'=>'resetpasswd'),
-            array('newpassword', 'length', 'max'=>50,'min'=>4, 'on'=>'resetpasswd'),
-            array('newpassword', 'authenticate', 'on'=>'resetpasswd'),
-            array('retrypassword', 'compare', 'compareAttribute'=>'newpassword', 'on'=>'resetpasswd'),
+            array('retrypassword', 'compare', 'compareAttribute'=>'newpassword', 'on'=>'resetpasswd,adminresetpwd'),
             // when reset password by admin
             array('name', 'required', 'on'=>'adminresetpwd'),
-            array('newpassword', 'length', 'max'=>50,'min'=>4, 'on'=>'adminresetpwd'),
-            array('newpassword', 'authenticate', 'on'=>'adminresetpwd'),
-            array('retrypassword', 'compare', 'compareAttribute'=>'newpassword', 'on'=>'adminresetpwd'),
 		);
 	}
     /**
@@ -73,35 +73,62 @@ class User extends CActiveRecord
             }
         }
     }
-
     /**
      * Authenticates the password.
      * This is the 'authenticate' validator as declared in rules().
      */
-    public function authenticate($attribute,$params)
+    public function authenticateLogin ($attribute, $params)
     {
-        $len = strlen($this->$attribute);
-
-        if ($len < 4) {
-            $this->addError($attribute, 'the length must greater than four characters.');
+        if (!$this->hasErrors()) {
+            $this->_identity=new UserIdentity($this->name, $this->password);
+            if ($this->_identity->authenticate()) {
+                $this->addError('password', 'Incorrect username or password.');
+            }
         }
-//        if (preg_match('/^[a-z0-9]+$/',$this->password) == 1){
-//            $this->addError('password','too simple.');
-//        }
-//        $userCount = User::model()->countByAttributes(array('name'=>$this->name));
-//        if ($userCount > 0) {
-//            $this->addError('name','the name '.$this->name.' had exist yet.');
-//        }
     }
 
     /**
-     * Authenticates the password.
-     * This is the 'authenticate' validator as declared in rules().
+     * Logs in the user using the given username and password in the model.
+     * @return boolean whether login is successful
      */
-    public function authenticate_newpasswd($attribute, $params)
+    public function login()
     {
-
+        if ($this->_identity === null) {
+            $this->_identity = new UserIdentity($this->name, $this->password);
+            $this->_identity->authenticate();
+        }
+        if ($this->_identity->errorCode === UserIdentity::ERROR_NONE) {
+            Yii::app()->user->login($this->_identity);
+            return true;
+        } else {
+            return false;
+        }
     }
+
+    /**
+     * register a user
+     * @param $attributes
+     * @return bool
+     */
+    public function register($attributes)
+    {
+        try {
+            $attributes['password'] = User::encrypt($attributes['password']);
+            $this->password = $attributes['password'];
+            $user = User::model();
+            $user->setAttributes($attributes);
+            $user->setIsNewRecord(true);
+            $user->save();
+
+            $userIdentity = new UserIdentity($this->name, $this->password);
+            Yii::app()->user->login($userIdentity);
+        } catch (Exception $ex) {
+            $this->addError('name', $ex->getMessage());
+            return false;
+        }
+        return true;
+    }
+
 	/**
 	 * @return array relational rules.
 	 */
@@ -198,7 +225,8 @@ class User extends CActiveRecord
      * @param encrypt the encrypted password
      * @param string $password plain password
      */
-    public static function validatePassword($encrypt = '' , $password = ''){
+    public static function validatePassword($encrypt = '' , $password = '')
+    {
         if(strlen($encrypt) != 34 || $password == ''){
             return false;
         }

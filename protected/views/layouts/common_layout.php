@@ -4,6 +4,10 @@
         <?php require_once('_head_tags.php'); ?>
     </head>
     <body>
+        <div>
+            <?php echo $this->loginUser ? $this->loginUser->name : ''; ?>
+            <a href="<?php echo $this->createUrl('user/logout');?>">Logout(disable)</a>
+        </div>
         <div class="navbar navbar-fixed-top" role="navigation" id="menu-nav">
             <div class="container-fluid">
                 <div class="navbar-header">
