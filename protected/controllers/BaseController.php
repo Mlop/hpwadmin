@@ -181,6 +181,11 @@ class BaseController extends CController
 //        $this->mainImagesabsuPath = Yii::app()->params['mainImagesabsuPath'];
     }
 
+    protected function encodeResult($data = array(), $errorCode = 0)
+    {
+        return CJSON::encode(array('error'=>$errorCode, 'msg'=>$data));
+    }
+
     /**
      * Returns a value indicating whether there is any validation error.
      * @param string $attribute attribute name. Use null to check all attributes.

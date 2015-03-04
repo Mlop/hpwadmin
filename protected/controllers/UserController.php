@@ -22,10 +22,27 @@ class UserController extends BaseController
 		$this->render('general', $data);
 	}
 
+    public function actionLogin()
+    {
+        $model = new User('login');
+        $loginForm = $this->request->getParam("User");
+        // collect user input data
+        if (isset($loginForm)) {
+            $model->attributes = $loginForm;
+            // validate user input and redirect to the previous page if valid
+            if ($model->validate() && $model->login()) {
+                $this->redirect(Yii::app()->user->returnUrl);
+                echo $this->encodeResult(array('returnUrl'=>$this->redirect(Yii::app()->user->returnUrl)));
+            }
+            if ($model->hasErrors()) {
+                echo $this->encodeResult($model->getErrors(), 1);
+            }
+        }
+    }
     /**
      * Displays the login page
      */
-    public function actionLogin()
+    public function actionLogin_old()
     {
         $model = new User('login');
         $loginForm = $this->request->getParam("User");
