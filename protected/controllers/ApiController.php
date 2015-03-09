@@ -9,24 +9,46 @@ class ApiController extends BaseController
     public $controller = "user";
     public $action = "login";
     public $sign = "";
+    public $callbackFunName = "success_callback";
 
-	/**
+    /**
 	 * jsonp回调函数
 	 */
-	public function actionCallback()
-	{
-        $request = Yii::app()->request;
-        $this->sign = $request->getParam("sign");
+    public function actionCallback()
+    {
+        $this->callbackFunName = $this->request->getParam('callback');
+        $this->sign = $this->request->getParam("sign");
         if (!$this->validateSign()) {
-            echo $this->encodeResult(t('prompt', 'INVALIDSIGN'), 2);
+            $this->returnData = $this->encodeResult(t('prompt', 'INVALIDSIGN'), 2);
+            echo $this->getCallbackData();
             return ;
         }
-        $this->controller = $request->getParam("controller");
-        $this->action = $request->getParam("action");
+        $this->controller = $this->request->getParam("controller");
+        $this->action = $this->request->getParam("action");
 
-        Yii::app()->runController($this->controller.'/'.$this->action);
+        $route = $this->controller.'/'.$this->action;
+        if (($ca = Yii::app()->createController($route)) !== null) {
+            list($controller, $action) = $ca;
+            $controller->init();
+            $controller->run($action);
+            $this->returnData = $controller->returnData;
+        } else {
+            $this->returnData = $this->encodeResult(t('prompt', 'INVALIDACTION')."：".$route, 2);
+        }
+
+//        Yii::app()->runController($this->controller.'/'.$this->action);
+
+        echo $this->getCallbackData();
     }
 
+    /**
+     * 封装JSONP返回的数据
+     * @return string
+     */
+    private function getCallbackData()
+    {
+        return $this->callbackFunName.'('.$this->returnData.')';
+    }
     /**
      * 验证接口来源是否正确, userID_userName_authUserName#动态串
      * @return bool
@@ -41,7 +63,7 @@ class ApiController extends BaseController
         $sign = substr($sourceSign, 0, strpos($sourceSign, "#"));
         $signArr = explode("_", $sign);
 
-        $checkAuth = AuthUser::model()->exists('auth_user_name=:name',array(':name'=>$signArr[count($signArr) - 1]));
+        $checkAuth = AuthUser::model()->exists('auth_user_name=:name', array(':name'=>$signArr[count($signArr) - 1]));
 
         return $checkAuth;
     }

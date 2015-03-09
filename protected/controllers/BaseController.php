@@ -26,7 +26,7 @@ class BaseController extends CController
 //    public $navigation = null;//NavigationHistory
 //    public $customers_advertiser = null;
 //    public $customers_ad_click_id = null;
-    public $error = array();
+//    public $error = array();
     private static $_db;
     /**
      * save head tag <description>
@@ -106,7 +106,8 @@ class BaseController extends CController
     /**
      * @var array errors should show on views
      */
-    private $_errors = array();
+//    private $_errors = array();
+    protected $returnData = "";
 
     public function __construct($id, $module = null)
     {
@@ -191,64 +192,64 @@ class BaseController extends CController
      * @param string $attribute attribute name. Use null to check all attributes.
      * @return boolean whether there is any error.
      */
-    public function hasErrors($attribute=null)
-    {
-        if($attribute===null)
-            return $this->_errors!==array();
-        else
-            return isset($this->_errors[$attribute]);
-    }
+//    public function hasErrors($attribute=null)
+//    {
+//        if($attribute===null)
+//            return $this->_errors!==array();
+//        else
+//            return isset($this->_errors[$attribute]);
+//    }
     /**
      * Returns the first error of the specified attribute.
      * @param string $attribute attribute name.
      * @return string the error message. Null is returned if no error.
      */
-    public function getError($attribute = null)
-    {
-        if (is_null($attribute)) {
-            return $this->_errors;
-        } else {
-            return isset($this->_errors[$attribute]) ? reset($this->_errors[$attribute]) : null;
-        }
-    }
+//    public function getError($attribute = null)
+//    {
+//        if (is_null($attribute)) {
+//            return $this->_errors;
+//        } else {
+//            return isset($this->_errors[$attribute]) ? reset($this->_errors[$attribute]) : null;
+//        }
+//    }
     /**
      * Removes errors for all attributes or a single attribute.
      * @param string $attribute attribute name. Use null to remove errors for all attribute.
      */
-    public function clearErrors($attribute=null)
-    {
-        if($attribute===null)
-            $this->_errors=array();
-        else
-            unset($this->_errors[$attribute]);
-    }
+//    public function clearErrors($attribute=null)
+//    {
+//        if($attribute===null)
+//            $this->_errors=array();
+//        else
+//            unset($this->_errors[$attribute]);
+//    }
     /**
      * Adds a new error to the specified attribute.
      * @param string $attribute attribute name
      * @param string $error new error message
      */
-    public function addError($attribute,$error)
-    {
-        $this->_errors[$attribute][]=$error;
-    }
+//    public function addError($attribute,$error)
+//    {
+//        $this->_errors[$attribute][]=$error;
+//    }
 
     /**
      * display error
      * @param $attribute attribute name
      */
-    public function displayError($attribute)
-    {
-        $eArr = isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
-
-        if (!empty($eArr)) {
-            $errStr = '<span style="color:red;">';
-            foreach ($eArr as $e) {
-                $errStr .= $e.'<br />';
-            }
-            $errStr .= '</span>';
-            echo $errStr;
-        }
-    }
+//    public function displayError($attribute)
+//    {
+//        $eArr = isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : array();
+//
+//        if (!empty($eArr)) {
+//            $errStr = '<span style="color:red;">';
+//            foreach ($eArr as $e) {
+//                $errStr .= $e.'<br />';
+//            }
+//            $errStr .= '</span>';
+//            echo $errStr;
+//        }
+//    }
     /**
      * 重写DB
      * @return 获得DB

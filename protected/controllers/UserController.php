@@ -30,16 +30,15 @@ class UserController extends BaseController
             $model->attributes = $loginForm;
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
-                $this->redirect(Yii::app()->user->returnUrl);
-                echo $this->encodeResult(array('returnUrl'=>$this->redirect(Yii::app()->user->returnUrl)));
+                $this->returnData = $this->encodeResult(array('returnUrl'=>Yii::app()->user->returnUrl));
                 return;
             } else if ($model->hasErrors()) {
-                echo $this->encodeResult($model->getErrors(), 1);
+                $this->returnData = $this->encodeResult($model->getErrors(), 1);
                 return;
             }
         }
 
-        echo $this->encodeResult(t('prompt', 'NOPARAM'), 2);
+        $this->returnData = $this->encodeResult(t('prompt', 'NOPARAM'), 2);
     }
     /**
      * Displays the login page

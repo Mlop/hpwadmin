@@ -76,7 +76,7 @@ return array(
         'authManager' => array('class' => 'webeez.classes.WebeezAuthManager'),
         'clientScript' => array(
             'class' => 'webeez.classes.WebeezClientScript',
-            'scriptMap' => array('jquery.js' => '/js/jquery.js', 'jquery.min.js' => false)
+            'scriptMap' => array('jquery.js' => '/js/jQuery/jquery-1.11.2.min.js', 'jquery.min.js' => false)
         ),
 //        'numberFormatter' => array('class' => 'webeez.classes.WebeezNumberFormatter'),
         'user' => array(
@@ -86,8 +86,8 @@ return array(
             'allowAutoLogin' => true
         ),
 		'db'=>array(
-//			'connectionString' => 'sqlite:/vagrant/hpw/protected/data/hpw.db',
-            'connectionString' => 'sqlite:/tmp/hpw.db',
+			'connectionString' => 'sqlite:/vagrant/hpw/protected/data/hpw.db',
+//            'connectionString' => 'sqlite:/tmp/hpw.db',
 //            'class' => 'webeez.extensions.DbConnection', //CDbConnection
 //            'emulatePrepare' => true,
 //            'charset' => 'utf8',
