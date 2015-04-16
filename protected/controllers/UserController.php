@@ -30,12 +30,12 @@ class UserController extends BaseController
             $model->attributes = $loginForm;
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
-                $this->returnData = $this->encodeResult(array('returnUrl'=>Yii::app()->user->returnUrl));
-                return;
+                $loginUser = User::findByUsername($model->name);
+                $this->returnData = $this->encodeResult(array('user_id'=>$loginUser->user_id, 'name'=>$loginUser->name));
             } else if ($model->hasErrors()) {
                 $this->returnData = $this->encodeResult($model->getErrors(), 1);
-                return;
             }
+            return;
         }
 
         $this->returnData = $this->encodeResult(t('prompt', 'NOPARAM'), 2);
@@ -78,13 +78,13 @@ class UserController extends BaseController
         if (isset($userPost)) {
             $model->setAttributes($userPost);
             if ($model->validate() && $model->register($userPost)) {
-                echo $this->encodeResult(Yii::app()->user->returnUrl);
+                $this->returnData = $this->encodeResult(Yii::app()->user->returnUrl);
             } else if ($model->hasErrors()) {
-                echo $this->encodeResult($model->getErrors(), 1);
-                return;
+                $this->returnData = $this->encodeResult($model->getErrors(), 1);
             }
+            return;
         }
-        echo $this->encodeResult(t('prompt', 'NOPARAM'), 2);
+        $this->returnData = $this->encodeResult(t('prompt', 'NOPARAM'), 2);
     }
 
     /**
@@ -92,6 +92,7 @@ class UserController extends BaseController
      */
     public function actionRegister_web()
     {
+        $this->layout = "";
         $model = new User('register');
         $userPost = $this->request->getParam('User');
         if (isset($userPost)) {
