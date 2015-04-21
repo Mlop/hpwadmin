@@ -30,15 +30,15 @@ if(file_exists($config_dev)) {
     $config = include ($config_prod);
 }
 
-if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'act/availableSeckills')) {
-    $config['components']['urlManager']['rules'] = array(
-        '<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-    );
-//    require WEBEEZ_LIB . DIRECTORY_SEPARATOR . 'webeez_api.php';
-} else {
-//    require WEBEEZ_LIB . DIRECTORY_SEPARATOR . 'webeez.php';
-}
-
+//if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'act/availableSeckills')) {
+//    $config['components']['urlManager']['rules'] = array(
+//        '<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+//    );
+////    require WEBEEZ_LIB . DIRECTORY_SEPARATOR . 'webeez_api.php';
+//} else {
+////    require WEBEEZ_LIB . DIRECTORY_SEPARATOR . 'webeez.php';
+//}
+//require_once('system.yii');
 require_once(YII_PATH.DIRECTORY_SEPARATOR.'yii.php');
 
 /**
@@ -47,7 +47,10 @@ require_once(YII_PATH.DIRECTORY_SEPARATOR.'yii.php');
  */
 Yii::setPathOfAlias('webeez', WEBEEZ_LIB);
 
-
+/* global functions */
+require_once(WEBEEZ_LIB.DIRECTORY_SEPARATOR.'helper'.DIRECTORY_SEPARATOR.'functions.php');
+// Load classes which will used for all applications.
+require(WEBEEZ_LIB.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'Breadcrumbs.php'); //breadcrumbs
 
 date_default_timezone_set('Asia/Shanghai');
 
