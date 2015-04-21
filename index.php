@@ -5,6 +5,7 @@ define('WEBEEZ_APP' , dirname(__FILE__).DIRECTORY_SEPARATOR.'protected');
 
 $config_dev = WEBEEZ_APP.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.'dev.php' ;
 $config_prod = WEBEEZ_APP.DIRECTORY_SEPARATOR.'configs'.DIRECTORY_SEPARATOR.'prod.php' ;
+
 if(file_exists($config_dev)) {
     define('IS_DEV_SITE',true);
     define('IS_PROD_SITE',false);
