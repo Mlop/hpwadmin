@@ -7,6 +7,8 @@ $this->breadcrumbs->add('首页', $this->baseUrl);
 显示：$this->breadcrumbs->display();
 3. 错误返回(ajax):
 error: 0=无错误；>0表示错误码；
+1 返回的错误是关联数组
+2 返回的错误是字符串
 msg：错误说明信息；
 示例：{'error':0,'msg':''}
 4. 需要一个公共错误跳转页面，显示致命错误，如数据库错误
@@ -27,15 +29,27 @@ msg：错误说明信息；
 7. 接口详细说明
 前端调用公共接口地址：api/callback?
 请求方式POST/GET
-7.1 登陆
-URL： /user/login
-Params:
-User[name]:用户名
-User[password]:密码
-返回：
-error: 0无错误
-1 返回的错误是关联数组
-2 返回的错误是字符串
-7.2 注册
-/user/register
+##7.1登陆
+
+- **URL** 
+ /user/login
+- **Params** 
+|参数名称|数据类型|说明|值|
+| --- | --- | --- | --- |
+|User[name]|string|用户名|vera|
+|User[password]|string|密码明文|vera|
+- **Return** 
+参照3. 错误返回(ajax)
+
+##7.2 注册
+
+- **URL** 
+ /user/register
+- **Params** 
+|参数名称|数据类型|说明|值|
+| --- | --- | --- | --- |
+|User[name]|string|用户名|vera|
+|User[password]|string|密码明文|vera|
+- **Return** 
+参照3. 错误返回(ajax)
 
