@@ -21,6 +21,9 @@ class UserController extends BaseController
 		$this->render('general', $data);
 	}
 
+    /**
+     * jsonp登陆
+     */
     public function actionLogin()
     {
         $model = new User('login');
@@ -31,14 +34,16 @@ class UserController extends BaseController
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
                 $loginUser = User::findByUsername($model->name);
-                $this->returnData = $this->encodeResult(array('user_id'=>$loginUser->user_id, 'name'=>$loginUser->name));
+                $loginUser->setAttribute('last_login_time', date('Y-m-d H:i:s'));
+                $loginUser->save();
+                $this->returnData = $this->encodeResult(array($loginUser));
             } else if ($model->hasErrors()) {
-                $this->returnData = $this->encodeResult($model->getErrors(), 1);
+                $this->returnData = $this->encodeResult($model->getErrors(), self::ERROR_CODE_ARRAY);
             }
             return;
         }
 
-        $this->returnData = $this->encodeResult(t('prompt', 'NOPARAM'), 2);
+        $this->returnData = $this->encodeResult(t('prompt', 'NOPARAM'), self::ERROR_CODE_STRING);
     }
     /**
      * Displays the login page
@@ -69,7 +74,7 @@ class UserController extends BaseController
     }
 
     /**
-     * 注册用户
+     * jsonp注册用户
      */
     public function actionRegister()
     {
@@ -78,13 +83,13 @@ class UserController extends BaseController
         if (isset($userPost)) {
             $model->setAttributes($userPost);
             if ($model->validate() && $model->register($userPost)) {
-                $this->returnData = $this->encodeResult(Yii::app()->user->returnUrl);
+                $this->returnData = $this->encodeResult($model);
             } else if ($model->hasErrors()) {
-                $this->returnData = $this->encodeResult($model->getErrors(), 1);
+                $this->returnData = $this->encodeResult($model->getErrors(), self::ERROR_CODE_ARRAY);
             }
             return;
         }
-        $this->returnData = $this->encodeResult(t('prompt', 'NOPARAM'), 2);
+        $this->returnData = $this->encodeResult(t('prompt', 'NOPARAM'), self::ERROR_CODE_STRING);
     }
 
     /**

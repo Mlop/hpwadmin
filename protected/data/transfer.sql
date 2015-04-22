@@ -74,6 +74,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL COMMENT '注册用户姓名',
+  `phone` varchar(50) DEFAULT NULL COMMENT '注册用户手机号',
   `password` varchar(50) DEFAULT NULL COMMENT '密码',
   `add_time` datetime DEFAULT NULL COMMENT '注册时间',
   `last_login_time` datetime DEFAULT NULL COMMENT '最后一次登录系统时间',

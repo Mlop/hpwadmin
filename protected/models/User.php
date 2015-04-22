@@ -41,9 +41,10 @@ class User extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'length', 'max'=>100),
-			array('password', 'length', 'max'=>50, 'min'=>4, 'on'=>'register,resetpasswd,adminresetpwd'),
+			array('password, phone', 'length', 'max'=>50, 'min'=>4, 'on'=>'register,resetpasswd,adminresetpwd'),
             array('newpassword', 'length', 'max'=>50,'min'=>4),
-            array('add_time, last_login_time, password', 'safe'),
+            array('newpassword', 'compare', 'compareAttribute'=>'password', 'on'=>'register'),
+            array('add_time, last_login_time, password, phone', 'safe'),
 			array('user_id, name, password, add_time, last_login_time', 'safe', 'on'=>'search'),
 
             //login

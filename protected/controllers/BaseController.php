@@ -109,6 +109,10 @@ class BaseController extends CController
 //    private $_errors = array();
     protected $returnData = "";
 
+    const ERROR_CODE_NOERROR = 0;
+    const ERROR_CODE_ARRAY = 1;
+    const ERROR_CODE_STRING = 2;
+
     public function __construct($id, $module = null)
     {
         $_GET = secure_array($_GET);
@@ -182,9 +186,15 @@ class BaseController extends CController
 //        $this->mainImagesabsuPath = Yii::app()->params['mainImagesabsuPath'];
     }
 
-    protected function encodeResult($data = array(), $errorCode = 0)
+    /**
+     * 将结果生成为json字符串
+     * @param array $data
+     * @param int $errorCode 0=无错误；1=错误是数组；2=错误是字符串
+     * @return string
+     */
+    protected function encodeResult($data = array(), $errorCode = self::ERROR_CODE_NOERROR)
     {
-        return CJSON::encode(array('error'=>$errorCode, 'msg'=>$data));
+        return CJSON::encode(array('msg'=>$data, 'error'=>$errorCode));
     }
 
     /**
