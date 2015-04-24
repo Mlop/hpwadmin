@@ -38,7 +38,7 @@ class Outcount extends CActiveRecord
 			array('customer_id, user_id', 'numerical', 'integerOnly'=>true),
 			array('money', 'numerical'),
 			array('phone', 'length', 'max'=>50),
-			array('note, add_time', 'safe'),
+			array('note, add_time, confer_repayment_date, is_repayment, real_repayment_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('outcount_id, customer_id, money, phone, note, add_time, user_id', 'safe', 'on'=>'search'),
@@ -71,6 +71,9 @@ class Outcount extends CActiveRecord
 			'note' => 'Note',
 			'add_time' => 'Add Time',
 			'user_id' => 'User',
+            'confer_repayment_date' => 'Confer Repayment Date',
+            'is_repayment' => 'Is Repayment',
+            'real_repayment_date' => 'Real Repayment Date',
 		);
 	}
 

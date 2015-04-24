@@ -15,6 +15,9 @@
  */
 class Customer extends CActiveRecord
 {
+    const TYPE_BORROW = 'borrower';
+    const TYPE_LEND = 'lender';
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -31,9 +34,10 @@ class Customer extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name,type', 'required'),
+			array('name, type, phone', 'required'),
 			array('type', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>100),
+            array('phone', 'length', 'max'=>50),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('customer_id, name, type', 'safe', 'on'=>'search'),
@@ -48,7 +52,6 @@ class Customer extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'incountOld201501301s' => array(self::HAS_MANY, 'IncountOld201501301', 'customer_id'),
 			'incounts' => array(self::HAS_MANY, 'Incount', 'customer_id'),
 			'outcounts' => array(self::HAS_MANY, 'Outcount', 'customer_id'),
 		);

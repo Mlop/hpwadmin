@@ -24,7 +24,8 @@ DROP TABLE IF EXISTS `customer`;
 CREATE TABLE `customer` (
   `customer_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL COMMENT '借款人或贷款人姓名',
-  `type` bit(1) DEFAULT NULL COMMENT '0=借款人，1=贷款人',
+  `type` bit(1) DEFAULT 0 COMMENT '0=借款人，1=贷款人',
+  `avatar` varchar(100) DEFAULT NULL COMMENT '用户头像',
   PRIMARY KEY (`customer_id`),
   KEY `customer_id` (`customer_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='借款人、贷款人姓名表';
@@ -40,6 +41,7 @@ CREATE TABLE `incount` (
   `phone` varchar(50) DEFAULT '' COMMENT '联系电话',
   `note` text COMMENT '备注',
   `add_time` datetime DEFAULT NULL COMMENT '入账时间',
+  `repayment_date` date DEFAULT NULL COMMENT '还款时间',
   `user_id` int(10) unsigned DEFAULT NULL COMMENT '所属用户ID',
   PRIMARY KEY (`incount_id`),
   KEY `customer_id` (`customer_id`),
@@ -59,6 +61,7 @@ CREATE TABLE `outcount` (
   `phone` varchar(50) DEFAULT '' COMMENT '联系电话',
   `note` text COMMENT '备注',
   `add_time` datetime DEFAULT NULL COMMENT '借出时间',
+  `repayment_date` date DEFAULT NULL COMMENT '还款时间',
   `user_id` int(10) unsigned DEFAULT NULL COMMENT '所属用户ID',
   PRIMARY KEY (`outcount_id`),
   KEY `customer_id` (`customer_id`),
@@ -80,6 +83,16 @@ CREATE TABLE `user` (
   `last_login_time` datetime DEFAULT NULL COMMENT '最后一次登录系统时间',
   PRIMARY KEY (`user_id`),
   KEY `user_id` (`user_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='注册用户表';
+
+-- ----------------------------
+-- Table structure for `auth_user`
+-- ----------------------------
+DROP TABLE IF EXISTS `auth_user`;
+CREATE TABLE `auth_user` (
+  `auth_user_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `auth_user_name` varchar(100) NOT NULL COMMENT '名称',
+  PRIMARY KEY (`auth_user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='向外提供API的用户（授权使用API的用户）';
 
 SET FOREIGN_KEY_CHECKS = 1;

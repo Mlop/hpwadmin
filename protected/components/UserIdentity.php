@@ -31,7 +31,7 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate()
 	{
-        $user = User::model()->findByAttributes(array('name'=>$this->name));
+        $user = User::model()->findByAttributes(array('phone'=>$this->name));
         if (count($user) == 0) {
             $this->errorCode = ERROR_USER_NOT_EXISTS;
         } else if (User::validatePassword($user->password, $this->password) === false) {

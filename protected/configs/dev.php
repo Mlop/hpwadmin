@@ -86,14 +86,14 @@ return array(
             'allowAutoLogin' => true
         ),
 		'db'=>array(
-			'connectionString' => 'sqlite:/vagrant/hpwadmin/protected/data/hpw.db',
-//            'connectionString' => 'sqlite:/tmp/hpw.db',
+//			'connectionString' => 'sqlite:/vagrant/hpwadmin/protected/data/hpw.db',
+
 //            'class' => 'webeez.extensions.DbConnection', //CDbConnection
 //            'emulatePrepare' => true,
-//            'charset' => 'utf8',
-//            'connectionString' => 'mysql:host=localhost;dbname=transfer',
-//            'username' => 'root',
-//            'password' => 'root'
+            'charset' => 'utf8',
+            'connectionString' => 'mysql:host=localhost;dbname=hpw',
+            'username' => 'root',
+            'password' => 'root'
 		),
 		// uncomment the following to use a MySQL database
 		/*

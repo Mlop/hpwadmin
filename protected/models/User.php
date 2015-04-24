@@ -48,9 +48,9 @@ class User extends CActiveRecord
 			array('user_id, name, password, add_time, last_login_time', 'safe', 'on'=>'search'),
 
             //login
-            array('name, password', 'required', 'on'=>'login,register'),
+            array('phone, password', 'required', 'on'=>'login,register'),
             array('password', 'authenticateLogin', 'on'=>'login'),
-            array('name', 'unique', 'on'=>'register'),
+            array('phone', 'unique', 'on'=>'register'),
             // when reset password normal
             array('name, oldpassword', 'required', 'on'=>'resetpasswd'),
             array('oldpassword', 'authenticate_oldpasswd', 'on'=>'resetpasswd'),
@@ -81,9 +81,9 @@ class User extends CActiveRecord
     public function authenticateLogin ($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $this->_identity=new UserIdentity($this->name, $this->password);
+            $this->_identity=new UserIdentity($this->phone, $this->password);
             if ($this->_identity->authenticate()) {
-                $this->addError('password', 'Incorrect username or password.');
+                $this->addError('password', 'Incorrect phone number or password.');
             }
         }
     }
@@ -95,7 +95,7 @@ class User extends CActiveRecord
     public function login()
     {
         if ($this->_identity === null) {
-            $this->_identity = new UserIdentity($this->name, $this->password);
+            $this->_identity = new UserIdentity($this->phone, $this->password);
             $this->_identity->authenticate();
         }
         if ($this->_identity->errorCode === UserIdentity::ERROR_NONE) {
@@ -199,10 +199,10 @@ class User extends CActiveRecord
 
     /**
      * Find User by Username
-     * @param unknown_type $username
+     * @param unknown_type $phone
      */
-    public static function findByUsername($username){
-        return User::model()->findByAttributes(array('name'=>$username));
+    public static function findUserByPhone($phone){
+        return User::model()->findByAttributes(array('phone'=>$phone));
     }
 
     /**

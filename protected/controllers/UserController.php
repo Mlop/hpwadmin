@@ -33,10 +33,10 @@ class UserController extends BaseController
             $model->attributes = $loginForm;
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
-                $loginUser = User::findByUsername($model->name);
+                $loginUser = User::findUserByPhone($model->phone);
                 $loginUser->setAttribute('last_login_time', date('Y-m-d H:i:s'));
                 $loginUser->save();
-                $this->returnData = $this->encodeResult(array($loginUser));
+                $this->returnData = $this->encodeResult($loginUser);
             } else if ($model->hasErrors()) {
                 $this->returnData = $this->encodeResult($model->getErrors(), self::ERROR_CODE_ARRAY);
             }
@@ -45,6 +45,26 @@ class UserController extends BaseController
 
         $this->returnData = $this->encodeResult(t('prompt', 'NOPARAM'), self::ERROR_CODE_STRING);
     }
+
+    /**
+     * 获取某用户的所有借入借出列表
+     */
+    public function actionGetAll()
+    {
+        $user_id = $this->request->getParam("user_id");
+
+        $sql = "SELECT customer.name username,customer.phone iphone,money,way,is_repayment,IFNULL(datediff(confer_repayment_date, NOW()),'unlimit') leftday from (
+                select *,incount_id id,'borrow' way from incount where user_id={$user_id}
+                UNION
+                select *,outcount_id id,'lend' way from outcount where user_id={$user_id}
+                ) tab join customer on customer.customer_id=tab.customer_id
+                ORDER BY leftday asc";
+        $command = Yii::app()->db->createCommand($sql);
+        $data = $command->queryAll();
+        $this->returnData = $this->encodeResult($data);
+//        var_dump($this->returnData);
+    }
+
     /**
      * Displays the login page
      */
