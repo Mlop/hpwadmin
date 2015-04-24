@@ -15,34 +15,29 @@ class OutcountController extends BaseController
         $this->breadcrumbs->add('create');
 
         $outcount_id = Yii::app()->request->getParam('outcount_id');
-        $outcountForm = Yii::app()->request->getParam('Outcount');
+        $outcountForm = Yii::app()->request->getParam('Account');
+
+        //modify
+        if ($incount_id) {
+            $model = Outcount::model()->findByPk($outcount_id);
+        } else {//new record
+            $model = new Outcount();
+        }
+
         if (!is_null($outcountForm)) {
             try {
-                unset($outcountForm['customerName']);
-                $outcountForm['user_id'] = 3;
-
-                //modify
-                if ($outcount_id) {
-                    $updateModel = Outcount::model()->findByPk($outcount_id);
-                    $updateModel->setAttributes($outcountForm);
-                    $updateModel->save();
-                } else {//new record
-                    $model = Outcount::model();
-                    $model->setAttributes($outcountForm);
-                    $model->setIsNewRecord(true);
-                    $model->save();
+                $model->setAttributes($outcountForm);
+                if ($model->save()) {
+                    $this->returnData = $this->encodeResult($model);
+                } else {
+                    $this->returnData = $this->encodeResult($model->getErrors(), self::ERROR_CODE_ARRAY);
                 }
-
             } catch (Exception $ex) {
-                $this->addError('customerName', $ex->getMessage());
+                $this->returnData = $this->encodeResult($ex->getMessage(), self::ERROR_CODE_STRING);
             }
+        } else {
+            $this->returnData = $this->encodeResult("未提交表单数据", self::ERROR_CODE_STRING);
         }
-        $formModel = new Outcount;
-        //fill form when modify
-        if ($outcount_id) {
-            $formModel->attributes = Outcount::model()->findByPk($outcount_id)->getAttributes();
-        }
-        $this->render("form", array('model'=>$formModel));
     }
 
     /**

@@ -16,34 +16,28 @@ class IncountController extends BaseController
         $this->breadcrumbs->add('create');
 
         $incount_id = Yii::app()->request->getParam('incount_id');
-        $incountForm = Yii::app()->request->getParam('Incount');
+        $incountForm = Yii::app()->request->getParam('Account');
+
+        //modify
+        if ($incount_id) {
+            $model = Incount::model()->findByPk($incount_id);
+        } else {//new record
+            $model = new Incount();
+        }
         if (!is_null($incountForm)) {
             try {
-                unset($incountForm['customerName']);
-                $incountForm['user_id'] = 3;
-
-                //modify
-                if ($incount_id) {
-                    $updateModel = Incount::model()->findByPk($incount_id);
-                    $updateModel->setAttributes($incountForm);
-                    $updateModel->save();
-                } else {//new record
-                    $model = Incount::model();
-                    $model->setAttributes($incountForm);
-                    $model->setIsNewRecord(true);
-                    $model->save();
+                $model->setAttributes($incountForm);
+                if ($model->save()) {
+                    $this->returnData = $this->encodeResult($model);
+                } else {
+                    $this->returnData = $this->encodeResult($model->getErrors(), self::ERROR_CODE_ARRAY);
                 }
-
             } catch (Exception $ex) {
-                $this->addError('customerName', $ex->getMessage());
+                $this->returnData = $this->encodeResult($ex->getMessage(), self::ERROR_CODE_STRING);
             }
+        } else {
+            $this->returnData = $this->encodeResult("未提交表单数据", self::ERROR_CODE_STRING);
         }
-        $formModel = new Incount;
-        //fill form when modify
-        if ($incount_id) {
-            $formModel->attributes = Incount::model()->findByPk($incount_id)->getAttributes();
-        }
-        $this->render("form", array('model'=>$formModel));
     }
 
     /**
