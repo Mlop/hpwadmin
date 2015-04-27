@@ -18,6 +18,9 @@
  */
 class Outcount extends CActiveRecord
 {
+    const REPAYMENT_NO = 'no';
+    const REPAYMENT_YES = 'yes';
+
 	/**
 	 * @return string the associated database table name
 	 */

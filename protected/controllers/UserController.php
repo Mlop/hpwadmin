@@ -47,13 +47,13 @@ class UserController extends BaseController
     }
 
     /**
-     * 获取某用户的所有借入借出列表
+     * 获取某用户的所有借入借出列表,按剩余时间倒序，一人可能有多条记录
      */
     public function actionGetAll()
     {
         $user_id = $this->request->getParam("user_id");
 
-        $sql = "SELECT customer.name username,customer.phone iphone,money,way,is_repayment,IFNULL(datediff(confer_repayment_date, NOW()),'unlimit') leftday from (
+        $sql = "SELECT customer.name username,customer.phone,money,way,is_repayment,IFNULL(datediff(confer_repayment_date, NOW()),'unlimit') leftday from (
                 select *,incount_id id,'borrow' way from incount where user_id={$user_id}
                 UNION
                 select *,outcount_id id,'lend' way from outcount where user_id={$user_id}
@@ -62,7 +62,66 @@ class UserController extends BaseController
         $command = Yii::app()->db->createCommand($sql);
         $data = $command->queryAll();
         $this->returnData = $this->encodeResult($data);
-//        var_dump($this->returnData);
+    }
+
+    /**
+     * 某用户所有帐目总和，负数表示借入，正数表示借出
+     */
+    public function actionGetListByPerson()
+    {
+        $user_id = $this->request->getParam("user_id");
+        $type = $this->request->getParam("type", 'lend');
+
+        $borrowSql = "select incount_id id,'borrow' way,money*(-1) money1,confer_repayment_date,is_repayment,customer_id from incount where user_id={$user_id}";
+        $lendSql = "select outcount_id id,'lend' way,money money1,confer_repayment_date,is_repayment,customer_id from outcount where user_id={$user_id}";
+
+        $sql = "SELECT customer.customer_id, customer.name username, phone, sum(money1) totalmoney, IFNULL(datediff(confer_repayment_date, NOW()),'unlimit') leftday from(";
+        switch($type) {
+            case "lend":
+                $sql .= $lendSql;
+                break;
+            case "borrow":
+                $sql .= $borrowSql;
+                break;
+            case "all":
+                $sql .= $borrowSql . " UNION ".$lendSql;
+                break;
+        }
+        $sql .= ")allcustomer join customer on customer.customer_id=allcustomer.customer_id
+                WHERE is_repayment='no'
+                GROUP BY customer_id";
+        $command = Yii::app()->db->createCommand($sql);
+        $data = $command->queryAll();
+        $this->returnData = $this->encodeResult($data);
+    }
+
+    /**
+     * 获取一段时间内的进、出帐总数
+     */
+    public function actionGetTotalPeriod()
+    {
+        $user_id = $this->request->getParam("user_id");
+        $period_type = $this->request->getParam("period_type", 'month');
+
+        if ($period_type != 'month' && $period_type != 'year') {
+            $this->returnData = $this->encodeResult('period_type仅支持year和month');
+        }
+
+        $inSql = "select sum(money) from incount where user_id={$user_id} and is_repayment='".InCount::REPAYMENT_NO."'";
+        $command = Yii::app()->db->createCommand($inSql);
+        $inTotal = $command->queryScalar();
+        $inSql = "select sum(money) from incount where user_id={$user_id} and is_repayment='".InCount::REPAYMENT_NO."' and {$period_type}(add_time)=month(now())";
+        $command = Yii::app()->db->createCommand($inSql);
+        $currentInTotal = $command->queryScalar();
+
+        $outSql = "select sum(money) from outcount where user_id={$user_id} and is_repayment='".OutCount::REPAYMENT_NO."'";
+        $command = Yii::app()->db->createCommand($outSql);
+        $outTotal = $command->queryScalar();
+        $outSql = "select sum(money) from outcount where user_id={$user_id} and is_repayment='".OutCount::REPAYMENT_NO."' and {$period_type}(add_time)=month(now())";
+        $command = Yii::app()->db->createCommand($outSql);
+        $currentOutTotal = $command->queryScalar();
+
+        $this->returnData = $this->encodeResult(array('inTotal'=>$inTotal, 'currentInTotal'=>$currentInTotal, 'outTotal'=>$outTotal, 'currentOutTotal'=>$currentOutTotal));
     }
 
     /**
