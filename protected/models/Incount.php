@@ -40,11 +40,11 @@ class Incount extends CActiveRecord
             array('money', 'required'),
 			array('customer_id, user_id', 'numerical', 'integerOnly'=>true),
 			array('money', 'numerical'),
-			array('phone', 'length', 'max'=>50),
+//			array('phone', 'length', 'max'=>50),
 			array('note, add_time, confer_repayment_date, is_repayment, real_repayment_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('incount_id, customer_id, money, phone, note, add_time, user_id', 'safe', 'on'=>'search'),
+			array('incount_id, customer_id, money, note, add_time, user_id', 'safe', 'on'=>'search'),
 		);
 	}
 

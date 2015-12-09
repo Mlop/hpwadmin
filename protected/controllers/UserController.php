@@ -108,20 +108,18 @@ class UserController extends BaseController
         }
 
         $inSql = "select sum(money) from incount where user_id={$user_id} and is_repayment='".InCount::REPAYMENT_NO."'";
-        $command = Yii::app()->db->createCommand($inSql);
-        $inTotal = $command->queryScalar();
+        $inTotal = Yii::app()->db->createCommand($inSql)->queryScalar();
+
         $inSql = "select sum(money) from incount where user_id={$user_id} and is_repayment='".InCount::REPAYMENT_NO."' and {$period_type}(add_time)=month(now())";
-        $command = Yii::app()->db->createCommand($inSql);
-        $currentInTotal = $command->queryScalar();
+        $currentInTotal = Yii::app()->db->createCommand($inSql)->queryScalar();
 
         $outSql = "select sum(money) from outcount where user_id={$user_id} and is_repayment='".OutCount::REPAYMENT_NO."'";
-        $command = Yii::app()->db->createCommand($outSql);
-        $outTotal = $command->queryScalar();
-        $outSql = "select sum(money) from outcount where user_id={$user_id} and is_repayment='".OutCount::REPAYMENT_NO."' and {$period_type}(add_time)=month(now())";
-        $command = Yii::app()->db->createCommand($outSql);
-        $currentOutTotal = $command->queryScalar();
+        $outTotal = Yii::app()->db->createCommand($outSql)->queryScalar();
 
-        $this->returnData = $this->encodeResult(array('inTotal'=>$inTotal, 'currentInTotal'=>$currentInTotal, 'outTotal'=>$outTotal, 'currentOutTotal'=>$currentOutTotal));
+        $outSql = "select sum(money) from outcount where user_id={$user_id} and is_repayment='".OutCount::REPAYMENT_NO."' and {$period_type}(add_time)=month(now())";
+        $currentOutTotal = Yii::app()->db->createCommand($outSql)->queryScalar();
+
+        $this->returnData = $this->encodeResult(array('inTotal'=>$inTotal ? $inTotal : 0, 'currentInTotal'=>$currentInTotal ? $currentInTotal : 0, 'outTotal'=>$outTotal ? $outTotal : 0, 'currentOutTotal'=>$currentOutTotal ? $currentOutTotal : 0));
     }
 
     /**
